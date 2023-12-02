@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/internal/dto"
-	"github.com/kafka-go/internal/service"
+	"github.com/go-board/internal/dto"
+	"github.com/go-board/internal/service"
 )
 
 type Admin struct {

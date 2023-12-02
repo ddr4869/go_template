@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/internal/controller"
-	"github.com/kafka-go/internal/dto"
+	"github.com/go-board/internal/controller"
+	"github.com/go-board/internal/dto"
 	"github.com/the-medium-tech/platform-externals/log"
 )
 

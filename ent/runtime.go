@@ -5,11 +5,11 @@ package ent
 import (
 	"time"
 
-	"github.com/kafka-go/ent/admin"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/schema"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/admin"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/schema"
+	"github.com/go-board/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

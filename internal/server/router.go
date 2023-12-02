@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/internal/controller"
-	"github.com/kafka-go/internal/middleware"
+	"github.com/go-board/internal/controller"
+	"github.com/go-board/internal/middleware"
 	// "github.com/the-medium-tech/platform-externals/log"
 )
 

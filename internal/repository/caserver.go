@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/kafka-go/ent"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent"
+	"github.com/go-board/ent/user"
 	"github.com/the-medium-tech/platform-externals/log"
 )
 

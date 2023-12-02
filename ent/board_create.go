@@ -10,8 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/user"
 )
 
 // BoardCreate is the builder for creating a Board entity.

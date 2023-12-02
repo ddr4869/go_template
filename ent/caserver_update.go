@@ -10,9 +10,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/predicate"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/predicate"
+	"github.com/go-board/ent/user"
 )
 
 // CaServerUpdate is the builder for updating CaServer entities.

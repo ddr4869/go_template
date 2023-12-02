@@ -8,8 +8,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/user"
 )
 
 // CaServer is the model entity for the CaServer schema.

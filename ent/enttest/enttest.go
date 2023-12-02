@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/kafka-go/ent"
+	"github.com/go-board/ent"
 	// required by schema hooks.
-	_ "github.com/kafka-go/ent/runtime"
+	_ "github.com/go-board/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/kafka-go/ent/migrate"
+	"github.com/go-board/ent/migrate"
 )
 
 type (

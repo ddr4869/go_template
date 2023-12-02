@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kafka-go/ent"
+	"github.com/go-board/ent"
 )
 
 // The AdminFunc type is an adapter to allow the use of ordinary

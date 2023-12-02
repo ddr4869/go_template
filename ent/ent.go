@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/kafka-go/ent/admin"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/admin"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

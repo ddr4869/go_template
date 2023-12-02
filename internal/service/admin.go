@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/internal/dto"
-	"github.com/kafka-go/internal/repository"
+	"github.com/go-board/internal/dto"
+	"github.com/go-board/internal/repository"
 )
 
 type Admin struct {

@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/predicate"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/predicate"
 )
 
 // CaServerDelete is the builder for deleting a CaServer entity.

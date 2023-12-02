@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/predicate"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/predicate"
 )
 
 // BoardDelete is the builder for deleting a Board entity.

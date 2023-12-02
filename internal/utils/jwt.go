@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-board/configs"
 	"github.com/golang-jwt/jwt"
-	"github.com/kafka-go/configs"
 	"github.com/the-medium-tech/platform-externals/log"
 )
 

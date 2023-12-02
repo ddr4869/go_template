@@ -3,8 +3,8 @@ package configs
 import (
 	"os"
 
+	"github.com/go-board/ent"
 	"github.com/go-redis/redis/v8"
-	"github.com/kafka-go/ent"
 )
 
 const AppConfigPath = "./configs/.env"

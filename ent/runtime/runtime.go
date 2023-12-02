@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/kafka-go/ent/runtime.go
+// The schema-stitching logic is generated in github.com/go-board/ent/runtime.go
 
 const (
 	Version = "v0.12.5"                                         // Version of ent codegen.

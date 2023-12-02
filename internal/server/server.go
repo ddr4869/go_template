@@ -8,10 +8,10 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/ent"
-	"github.com/kafka-go/internal/controller"
-	"github.com/kafka-go/internal/repository"
-	"github.com/kafka-go/internal/service"
+	"github.com/go-board/ent"
+	"github.com/go-board/internal/controller"
+	"github.com/go-board/internal/repository"
+	"github.com/go-board/internal/service"
 	"github.com/the-medium-tech/platform-externals/log"
 )
 

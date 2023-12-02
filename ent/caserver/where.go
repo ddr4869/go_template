@@ -5,7 +5,7 @@ package caserver
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/kafka-go/ent/predicate"
+	"github.com/go-board/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

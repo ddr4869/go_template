@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-board/configs"
+	"github.com/go-board/internal/server"
 	"github.com/joho/godotenv"
-	"github.com/kafka-go/configs"
-	"github.com/kafka-go/internal/server"
 )
 
 // 0 -> .env 파일 등 불러와서 config 세팅

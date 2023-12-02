@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/internal/dto"
-	"github.com/kafka-go/internal/repository"
-	"github.com/kafka-go/internal/utils"
+	"github.com/go-board/internal/dto"
+	"github.com/go-board/internal/repository"
+	"github.com/go-board/internal/utils"
 	"github.com/the-medium-tech/platform-externals/log"
 	"golang.org/x/crypto/bcrypt"
 )

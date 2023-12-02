@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kafka-go/ent"
-	"github.com/kafka-go/internal/dto"
-	"github.com/kafka-go/internal/repository"
+	"github.com/go-board/ent"
+	"github.com/go-board/internal/dto"
+	"github.com/go-board/internal/repository"
 )
 
 type Board struct {

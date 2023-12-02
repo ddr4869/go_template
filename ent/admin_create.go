@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/kafka-go/ent/admin"
+	"github.com/go-board/ent/admin"
 )
 
 // AdminCreate is the builder for creating a Admin entity.

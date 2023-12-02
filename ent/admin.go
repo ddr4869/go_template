@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/kafka-go/ent/admin"
+	"github.com/go-board/ent/admin"
 )
 
 // Admin is the model entity for the Admin schema.

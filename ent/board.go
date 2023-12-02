@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/user"
 )
 
 // Board is the model entity for the Board schema.

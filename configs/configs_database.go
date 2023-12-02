@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-board/ent"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/kafka-go/ent"
 	"github.com/the-medium-tech/platform-externals/log"
 )
 

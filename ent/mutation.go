@@ -11,11 +11,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/kafka-go/ent/admin"
-	"github.com/kafka-go/ent/board"
-	"github.com/kafka-go/ent/caserver"
-	"github.com/kafka-go/ent/predicate"
-	"github.com/kafka-go/ent/user"
+	"github.com/go-board/ent/admin"
+	"github.com/go-board/ent/board"
+	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/predicate"
+	"github.com/go-board/ent/user"
 )
 
 const (
