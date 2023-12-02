@@ -2,7 +2,9 @@ package server
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -40,6 +42,16 @@ func NewDefaultServer(clinet *ent.Client) *Server {
 
 func NewDefaultGinRouter() *gin.Engine {
 	gin.ForceConsoleColor()
+
+	logStartTime := time.Now()
+	logTimeFormat := logStartTime.Format("2006-01-02 15:04:05")
+	logPath := os.Getenv("LOG_FILE")
+	logFile, err := os.Create(logPath + "-" + logTimeFormat)
+	if err != nil {
+		log.Fatal(err)
+	}
+	gin.DefaultWriter = io.MultiWriter(logFile)
+
 	router := gin.New()
 	router.Use(gin.LoggerWithFormatter(GetGinLogFomatter()))
 
@@ -78,7 +90,7 @@ func GetGinLogFomatter() gin.LogFormatter {
 			param.Latency,
 			param.ClientIP,
 			methodColor, param.Method, resetColor,
-			param.Path,
+			"/Users/ieungyu/go/src/github.com/go-board/logs/log.txt",
 			param.ErrorMessage,
 		)
 	}

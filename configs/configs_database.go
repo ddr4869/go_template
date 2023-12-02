@@ -7,7 +7,6 @@ import (
 	"github.com/go-board/ent"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/the-medium-tech/platform-externals/log"
 )
 
 func (c *Config) SetEntRepo() *ent.Client {
@@ -45,7 +44,6 @@ func (c *Config) SetEntRepo() *ent.Client {
 func (c *Config) SetRedisRepo() *redis.Client {
 
 	redisCfg := c.Redis
-	log.Infof("Addr:%s, Port:%s", redisCfg.Host, redisCfg.Port)
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redisCfg.Host + ":" + redisCfg.Port,
 		Password: redisCfg.Password, // no password set
@@ -65,15 +63,4 @@ func (c *Config) SetRedisRepo() *redis.Client {
 
 func (c *Config) GetRedisClient() *redis.Client {
 	return c.RedisCient
-}
-
-func (c *Config) RedisTest() {
-
-	log.Info("RedisTest Call !!!")
-	ctx := context.Background()
-	err := c.RedisCient.Set(ctx, "key3", "value", 0).Err()
-	if err != nil {
-		log.Info("RedisTest Error !!!")
-		panic(err)
-	}
 }

@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 )
 
@@ -28,9 +27,8 @@ type ReqLoginUser struct {
 }
 
 type AccessClaims struct {
-	UuID     uuid.UUID
-	Username string
-	jwt.StandardClaims
+	Username   string
+	ExpireTime float64
 }
 
 type RefreshClaims struct {

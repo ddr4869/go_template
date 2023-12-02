@@ -9,7 +9,6 @@ import (
 
 func (s *Server) Routes() {
 	r := s.Router
-	//api := r.Group("/")
 	RouteUser(r, s.controller["user"].(controller.User))
 	RouteCaServer(r, s.controller["caserver"].(controller.CaServer))
 	RouteBoard(r, s.controller["board"].(controller.Board))

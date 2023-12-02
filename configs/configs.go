@@ -10,20 +10,6 @@ import (
 const AppConfigPath = "./configs/.env"
 
 var ServerConfig *Config
-var GlobalTest *GlobalConfigTest
-
-func GlobalInit() *GlobalConfigTest {
-	GlobalTest = &GlobalConfigTest{
-		Foo: "a",
-		Bar: "b",
-	}
-	return GlobalTest
-}
-
-type GlobalConfigTest struct {
-	Foo string
-	Bar string
-}
 
 type Config struct {
 	Backend    *BackendConfig
@@ -60,7 +46,6 @@ func Init() *Config {
 	backend := GetBackendConfig()
 	db := GetDBConfig()
 	redis := GetRedisConf()
-	GlobalInit()
 
 	ServerConfig = &Config{
 		Backend: backend,

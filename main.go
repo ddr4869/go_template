@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
+
+	"github.com/the-medium-tech/platform-externals/log"
 
 	"github.com/go-board/configs"
 	"github.com/go-board/internal/server"
@@ -21,13 +22,13 @@ func main() {
 	cfg := configs.Init()
 	entClient := cfg.SetEntRepo()
 	_ = cfg.SetRedisRepo()
-	cfg.RedisTest()
 
 	server := server.NewDefaultServer(entClient)
 	server.Routes()
 
 	if err := server.Start(cfg.Backend.ServerPort); err != nil {
-		log.Fatal("staring failed: ", err)
+		//log.Fatal("staring failed: ", err)
+		log.Errorf("staring failed: ", err)
 		os.Exit(1)
 	}
 
