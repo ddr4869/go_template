@@ -1,0 +1,119 @@
+{"level":"info","timestamp":"2023-12-02 18:02:35","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:02:35","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:02:35","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:02:38","msg":"jwt Token: &{ 0x1400000c180 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:02:38","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:02:38","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:09:09","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:09:09","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:09:09","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:09:10","msg":"jwt Token: &{ 0x1400000c1c8 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:09:10","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:09:10","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:09:10","msg":"<nil>"}
+{"level":"info","timestamp":"2023-12-02 18:09:23","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:09:23","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:09:23","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:09:24","msg":"jwt Token: &{ 0x1400000c180 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:09:24","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:09:24","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:09:24","msg":"test: %v<nil>"}
+{"level":"info","timestamp":"2023-12-02 18:11:21","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:11:21","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:11:21","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:11:23","msg":"jwt Token: &{ 0x140001af4e8 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:11:23","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:11:23","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:11:23","msg":"test: %v{ }"}
+{"level":"info","timestamp":"2023-12-02 18:13:51","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:13:51","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:13:51","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:13:54","msg":"jwt Token: &{ 0x140000d4168 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:13:54","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:13:54","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:13:54","msg":"test: %v&{a b}"}
+{"level":"info","timestamp":"2023-12-02 18:14:22","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:14:22","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:14:22","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:14:23","msg":"jwt Token: &{ 0x14000215488 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:14:23","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:14:23","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:14:23","msg":"test: %s %sab"}
+{"level":"info","timestamp":"2023-12-02 18:14:32","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:14:32","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:14:32","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:14:34","msg":"jwt Token: &{ 0x140001161b0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:14:34","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:14:34","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:14:34","msg":"test: a b"}
+{"level":"info","timestamp":"2023-12-02 18:35:34","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:35:34","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:35:34","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:35:36","msg":"jwt Token: &{ 0x140002174e8 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:35:36","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:35:36","msg":"cfg: &{0x14000607ae0 0x14000232100 0x140005b7180 <nil> Redis<localhost:55000 db:0>}"}
+{"level":"info","timestamp":"2023-12-02 18:35:36","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:35:36","msg":"test: a b"}
+{"level":"info","timestamp":"2023-12-02 18:35:49","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:35:49","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:35:49","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:35:51","msg":"jwt Token: &{ 0x140005961b0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:35:51","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:35:51","msg":"cfg: &{Backend:0x14000241e60 DB:0x140003d9d80 Redis:0x1400004afc0 EntClient:<nil> RedisCient:Redis<localhost:55000 db:0>}"}
+{"level":"info","timestamp":"2023-12-02 18:35:51","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:35:51","msg":"test: a b"}
+{"level":"info","timestamp":"2023-12-02 18:36:27","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:36:27","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:36:27","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:36:30","msg":"jwt Token: &{ 0x1400054c168 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:36:30","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:36:30","msg":"cfg: &{Backend:0x14000221e40 DB:0x14000212000 Redis:0x1400045b100 EntClient:<nil> RedisCient:Redis<localhost:55000 db:0>}"}
+{"level":"info","timestamp":"2023-12-02 18:36:30","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:44:18","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:44:18","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:44:18","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:44:20","msg":"jwt Token: &{ 0x140002174d0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:44:20","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:44:20","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:44:26","msg":"jwt Token: &{ 0x140002174d0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:44:26","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:44:26","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:45:02","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:45:02","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:45:02","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:45:04","msg":"jwt Token: &{ 0x140002174a0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:45:04","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 18:45:04","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 18:45:04","msg":"test: a b"}
+{"level":"info","timestamp":"2023-12-02 18:48:53","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:48:53","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:48:53","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:48:56","msg":"jwt Token: &{ 0x140005bc180 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:48:56","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"error","timestamp":"2023-12-02 18:48:56","msg":"WRONGTYPE Operation against a key holding the wrong kind of value"}
+{"level":"info","timestamp":"2023-12-02 18:49:15","msg":"jwt Token: &{ 0x140005bc180 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:49:15","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"error","timestamp":"2023-12-02 18:49:15","msg":"WRONGTYPE Operation against a key holding the wrong kind of value"}
+{"level":"info","timestamp":"2023-12-02 18:49:16","msg":"jwt Token: &{ 0x140005bc180 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:49:16","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"error","timestamp":"2023-12-02 18:49:16","msg":"WRONGTYPE Operation against a key holding the wrong kind of value"}
+{"level":"info","timestamp":"2023-12-02 18:49:20","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:49:20","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:49:20","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 18:49:22","msg":"jwt Token: &{ 0x140001f7518 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:49:22","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"error","timestamp":"2023-12-02 18:49:22","msg":"WRONGTYPE Operation against a key holding the wrong kind of value"}
+{"level":"error","timestamp":"2023-12-02 18:49:22","msg":"WRONGTYPE Operation against a key holding the wrong kind of value"}
+{"level":"info","timestamp":"2023-12-02 18:50:23","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:50:23","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:50:23","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"error","timestamp":"2023-12-02 18:51:08","msg":"ent: constraint failed: Error 1062 (23000): Duplicate entry 'tom' for key 'users.name'"}
+{"level":"info","timestamp":"2023-12-02 18:51:54","msg":"Key: 'ReqLoginUser.Name' Error:Field validation for 'Name' failed on the 'required' tag\nKey: 'ReqLoginUser.Password' Error:Field validation for 'Password' failed on the 'required' tag"}
+{"level":"info","timestamp":"2023-12-02 18:55:28","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 18:55:28","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 18:55:28","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"error","timestamp":"2023-12-02 18:55:33","msg":"crypto/bcrypt: hashedSecret too short to be a bcrypted password"}
+{"level":"info","timestamp":"2023-12-02 18:56:51","msg":"jwt Token: &{ 0x1400000c168 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 18:56:51","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"error","timestamp":"2023-12-02 18:56:51","msg":"ERR wrong number of arguments for 'hset' command"}
+{"level":"error","timestamp":"2023-12-02 18:56:51","msg":"ERR wrong number of arguments for 'hset' command"}

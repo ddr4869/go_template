@@ -1,0 +1,34 @@
+{"level":"info","timestamp":"2023-12-02 17:20:01","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:20:01","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:20:04","msg":"jwt Token: &{ 0x140001af518 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:20:04","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:20:39","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:20:39","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:20:41","msg":"jwt Token: &{ 0x140002174a0 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:20:41","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:20:41","msg":"<nil>"}
+{"level":"info","timestamp":"2023-12-02 17:21:33","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:21:33","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:21:36","msg":"jwt Token: &{ 0x140001f7500 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:21:36","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:21:36","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 17:23:17","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:23:17","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:23:19","msg":"jwt Token: &{ 0x1400021f500 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:23:19","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:23:19","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 17:54:59","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:54:59","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:55:02","msg":"jwt Token: &{ 0x1400000c1c8 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:55:02","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:55:02","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:55:02","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 17:57:15","msg":"jwt Token: &{ 0x1400000c1c8 map[alg:HS256 typ:JWT] map[foo:bar nbf:1444478400]  false}"}
+{"level":"info","timestamp":"2023-12-02 17:57:15","msg":"tokenString: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.i361nxEsBqbetXY92J_iqeKOpCYvS6jlLkVW3X6qsqc"}
+{"level":"info","timestamp":"2023-12-02 17:57:15","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:57:15","msg":"Redis<localhost:55000 db:0>"}
+{"level":"info","timestamp":"2023-12-02 17:57:42","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:57:42","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 17:59:38","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 17:59:38","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 17:59:38","msg":"Listening and serving HTTP on :8080\n"}
