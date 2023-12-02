@@ -1,3 +1,6 @@
 {"level":"info","timestamp":"2023-12-02 23:37:37","msg":"Addr:localhost, Port:55000"}
 {"level":"info","timestamp":"2023-12-02 23:37:37","msg":"RedisTest Call !!!"}
 {"level":"info","timestamp":"2023-12-02 23:37:37","msg":"Listening and serving HTTP on :8080\n"}
+{"level":"info","timestamp":"2023-12-02 23:38:24","msg":"Addr:localhost, Port:55000"}
+{"level":"info","timestamp":"2023-12-02 23:38:24","msg":"RedisTest Call !!!"}
+{"level":"info","timestamp":"2023-12-02 23:38:24","msg":"Listening and serving HTTP on :8080\n"}
