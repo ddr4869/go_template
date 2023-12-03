@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/dto"
 	"github.com/go-board/internal/service"
+	"github.com/the-medium-tech/platform-externals/log"
 )
 
 type Board struct {
@@ -26,8 +27,10 @@ func (s *Board) BoardList(c *gin.Context) {
 }
 
 func (s *Board) UserBoardList(c *gin.Context) {
-	req := c.MustGet("req").(dto.ReqUserBoardList)
-	boards, err := s.board.UserBoardList(c, req.Writer)
+
+	token := c.MustGet("token").(*dto.AccessClaims)
+	log.Infof("token: %+v", token)
+	boards, err := s.board.UserBoardList(c, token.Username)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 	}
@@ -36,7 +39,8 @@ func (s *Board) UserBoardList(c *gin.Context) {
 
 func (s *Board) CreateBoard(c *gin.Context) {
 	req := c.MustGet("req").(dto.ReqCreateBoard)
-	board, err := s.board.CreateBoard(c, req.Title, req.Content, req.Writer)
+	token := c.MustGet("token").(*dto.AccessClaims)
+	board, err := s.board.CreateBoard(c, req.Title, req.Content, token.Username)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -56,7 +60,8 @@ func (s *Board) ReadBoard(c *gin.Context) {
 
 func (s *Board) DeleteBoard(c *gin.Context) {
 	req := c.MustGet("req").(dto.ReqCreateBoard)
-	board, err := s.board.CreateBoard(c, req.Title, req.Content, req.Writer)
+	token := c.MustGet("token").(*dto.AccessClaims)
+	board, err := s.board.CreateBoard(c, req.Title, req.Content, token.Username)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

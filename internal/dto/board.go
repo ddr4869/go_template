@@ -20,7 +20,7 @@ type BoardDto struct {
 type ReqCreateBoard struct {
 	Title   string `form:"title" json:"title" binding:"required"`
 	Content string `form:"content" json:"content"`
-	Writer  string `form:"writer" json:"writer" binding:"required"`
+	//Writer  string `form:"writer" json:"writer" binding:"required"`
 }
 
 type ReqDeleteBoard struct {

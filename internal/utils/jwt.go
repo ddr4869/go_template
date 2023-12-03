@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-board/configs"
 	"github.com/go-board/internal/dto"
 	"github.com/golang-jwt/jwt"
@@ -21,6 +22,15 @@ type Token struct {
 	RefreshUuid  string
 	AtExpires    int64
 	RtExpires    int64
+}
+
+func UserTokenExtract(c *gin.Context) {
+	accessMetaData, err := ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.Set("token", accessMetaData)
 }
 
 func CreateJwtToken(name string) (string, string, error) {
@@ -81,11 +91,9 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 		return []byte(os.Getenv("ACCESS_SECRET_KEY")), nil
 	})
 	if err != nil {
-		log.Info("C")
 		log.Error(err)
 		return nil, err
 	}
-	log.Info("D")
 	return token, nil
 }
 

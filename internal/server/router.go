@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/controller"
 	"github.com/go-board/internal/middleware"
+	"github.com/go-board/internal/utils"
 	// "github.com/the-medium-tech/platform-externals/log"
 )
 
@@ -20,7 +21,7 @@ func RouteUser(r *gin.Engine, c controller.User) {
 	api.GET("/", c.UserList)
 	api.POST("/", mwUser.CreateUser, c.CreateUser)
 	api.POST("/login", mwUser.UserLogin, c.UserLogin)
-	api.GET("/jwt", c.UserJwtTest)
+	//api.GET("/jwt", c.UserJwtTest)
 }
 
 func RouteCaServer(r *gin.Engine, c controller.CaServer) {
@@ -37,8 +38,8 @@ func RouteBoard(r *gin.Engine, c controller.Board) {
 
 	api.GET("/view", mwBoard.RecommendBoard, c.ReadBoard)
 	api.GET("/list", c.BoardList)
-	api.GET("/list/user", mwBoard.UserBoardList, c.UserBoardList)
-	api.POST("/", mwBoard.CreateBoard, c.CreateBoard)
+	api.GET("/list/user", utils.UserTokenExtract, c.UserBoardList)
+	api.POST("/", mwBoard.CreateBoard, utils.UserTokenExtract, c.CreateBoard)
 	api.GET("/recommend", mwBoard.RecommendBoard, c.RecommendBoard)
 	api.GET("/hot", c.HotBoardList)
 }

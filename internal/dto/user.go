@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -12,7 +14,10 @@ type User struct {
 }
 
 type UserDto struct {
-	ID int
+	ID          int
+	Name        string
+	Description string
+	CreatedDate time.Time
 }
 
 type ReqCreateUser struct {

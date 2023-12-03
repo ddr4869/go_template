@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/dto"
 	"github.com/go-board/internal/service"
-	"github.com/go-board/internal/utils"
 )
 
 type User struct {
@@ -45,13 +44,4 @@ func (s *User) CreateUser(c *gin.Context) {
 		return
 	}
 	c.JSON(200, user)
-}
-
-func (s *User) UserJwtTest(c *gin.Context) {
-	_, err := utils.ExtractTokenMetadata(c.Request)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(200, "ok")
 }

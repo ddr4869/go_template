@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-board/ent"
 	"github.com/go-board/internal/dto"
 	"github.com/go-board/internal/repository"
 	"github.com/go-board/internal/utils"
@@ -23,12 +24,7 @@ func (s *User) UserList(c *gin.Context) ([]dto.UserDto, error) {
 		return nil, err
 	}
 
-	dto_users := make([]dto.UserDto, 0)
-	for i, v := range users {
-		dto_users[i].ID = v.ID
-	}
-
-	return dto_users, nil
+	return convertUserArrayEntToDto(users), nil
 }
 
 func (s *User) CreateUser(c *gin.Context, name, description, password string) (*dto.User, error) {
@@ -90,4 +86,17 @@ func PasswordEncryption(password []byte) (sum []byte, err error) {
 
 func CompareHashAndPassword(hashPassword []byte, password []byte) error {
 	return bcrypt.CompareHashAndPassword(hashPassword, password)
+}
+
+func convertUserArrayEntToDto(entUsers []*ent.User) []dto.UserDto {
+	dto_users := make([]dto.UserDto, 0)
+	for _, v := range entUsers {
+		dto_user := dto.UserDto{
+			Name:        v.Name,
+			Description: v.Description,
+			CreatedDate: v.CreatedDate,
+		}
+		dto_users = append(dto_users, dto_user)
+	}
+	return dto_users
 }
