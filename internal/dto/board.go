@@ -24,9 +24,13 @@ type ReqCreateBoard struct {
 }
 
 type ReqDeleteBoard struct {
-	ID      string `form:"id" json:"id" binding:"required"`
+	ID int `uri:"id" binding:"required"`
+}
+
+type ReqPatchBoard struct {
+	ID      int    `form:"id" json:"id" binding:"required"`
+	Title   string `form:"title" json:"title"`
 	Content string `form:"content" json:"content"`
-	Writer  string `form:"writer" json:"writer" binding:"required"`
 }
 
 type ReqUserBoardList struct {

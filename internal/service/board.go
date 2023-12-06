@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/ent"
 	"github.com/go-board/internal/dto"
@@ -36,19 +38,7 @@ func (s *Board) CreateBoard(c *gin.Context, title, content, writer string) (*dto
 	if err != nil {
 		return nil, err
 	}
-
-	dtoBoard := dto.Board{
-		ID:          uint(board.ID),
-		Title:       board.Title,
-		Content:     board.Content,
-		Writer:      board.Writer,
-		View:        board.View,
-		Recommend:   board.Recommend,
-		Hot:         board.Hot,
-		CreatedDate: board.CreatedDate,
-	}
-
-	return &dtoBoard, nil
+	return convertBoardEntToDto(board), nil
 }
 
 func (s *Board) ReadBoard(c *gin.Context, boardId int) (*dto.Board, error) {
@@ -56,19 +46,41 @@ func (s *Board) ReadBoard(c *gin.Context, boardId int) (*dto.Board, error) {
 	if err != nil {
 		return nil, err
 	}
+	return convertBoardEntToDto(board), nil
+}
 
-	dtoBoard := dto.Board{
-		ID:          uint(board.ID),
-		Title:       board.Title,
-		Content:     board.Content,
-		Writer:      board.Writer,
-		View:        board.View,
-		Recommend:   board.Recommend,
-		Hot:         board.Hot,
-		CreatedDate: board.CreatedDate,
+func (s *Board) DeleteBoard(c *gin.Context, boardId int, name string) error {
+
+	board, err := s.board.ReadBoard(c, boardId)
+	if err != nil {
+		return err
+	}
+	if board.Writer != name {
+		return errors.New("User is not writer")
 	}
 
-	return &dtoBoard, nil
+	err = s.board.DeleteBoard(c, boardId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Board) PatchBoard(c *gin.Context, req dto.ReqPatchBoard, name string) (*dto.Board, error) {
+
+	board, err := s.board.ReadBoard(c, req.ID)
+	if err != nil {
+		return nil, err
+	}
+	if board.Writer != name {
+		return nil, errors.New("User is not writer")
+	}
+
+	patchBoard, err := s.board.PatchBoard(c, req.ID, req.Title, req.Content)
+	if err != nil {
+		return nil, err
+	}
+	return convertBoardEntToDto(patchBoard), nil
 }
 
 func (s *Board) RecommendBoard(c *gin.Context, boardId int) (int, error) {
@@ -92,6 +104,21 @@ func (s *Board) HotBoardList(c *gin.Context) ([]dto.Board, error) {
 		return nil, err
 	}
 	return convertBoardArrayEntToDto(hotBoards), nil
+}
+
+func convertBoardEntToDto(entBoards *ent.Board) *dto.Board {
+	dtoBoard := dto.Board{
+		ID:          uint(entBoards.ID),
+		Title:       entBoards.Title,
+		Content:     entBoards.Content,
+		Writer:      entBoards.Writer,
+		View:        entBoards.View,
+		Recommend:   entBoards.Recommend,
+		Hot:         entBoards.Hot,
+		CreatedDate: entBoards.CreatedDate,
+	}
+
+	return &dtoBoard
 }
 
 func convertBoardArrayEntToDto(entBoards []*ent.Board) []dto.Board {

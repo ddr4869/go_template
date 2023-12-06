@@ -70,6 +70,31 @@ func (r *Board) ReadBoard(ctx context.Context, boardId int) (*ent.Board, error) 
 	return board, nil
 }
 
+func (r *Board) DeleteBoard(ctx context.Context, boardId int) error {
+	err := r.client.Board.DeleteOneID(uint(boardId)).Exec(ctx)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (r *Board) PatchBoard(ctx context.Context, boardId int, title, content string) (*ent.Board, error) {
+	query := r.client.Board.UpdateOneID(uint(boardId))
+	if title != "" {
+		query.SetTitle(title)
+	}
+	if content != "" {
+		query.SetContent(content)
+	}
+	patchBoard, err := query.Save(ctx)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return patchBoard, nil
+}
+
 func (r *Board) RecommendBoard(ctx context.Context, boardId int) (int, error) {
 
 	board, err := r.client.Board.UpdateOneID(uint(boardId)).AddRecommend(1).

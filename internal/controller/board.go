@@ -59,14 +59,25 @@ func (s *Board) ReadBoard(c *gin.Context) {
 }
 
 func (s *Board) DeleteBoard(c *gin.Context) {
-	req := c.MustGet("req").(dto.ReqCreateBoard)
+	req := c.MustGet("req").(dto.ReqDeleteBoard)
 	token := c.MustGet("token").(*dto.AccessClaims)
-	board, err := s.board.CreateBoard(c, req.Title, req.Content, token.Username)
+	err := s.board.DeleteBoard(c, req.ID, token.Username)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(200, board)
+	c.JSON(200, "succesfully deleted")
+}
+
+func (s *Board) PatchBoard(c *gin.Context) {
+	req := c.MustGet("req").(dto.ReqPatchBoard)
+	token := c.MustGet("token").(*dto.AccessClaims)
+	patchBoard, err := s.board.PatchBoard(c, req, token.Username)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, patchBoard)
 }
 
 func (s *Board) RecommendBoard(c *gin.Context) {

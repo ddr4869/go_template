@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,32 @@ func (s *Board) CreateBoard(c *gin.Context) {
 	if err := c.ShouldBind(&req); err != nil {
 		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}
+
+func (s *Board) DeleteBoard(c *gin.Context) {
+	var req dto.ReqDeleteBoard
+	if err := c.ShouldBindUri(&req); err != nil {
+		log.Info(err)
+		MwAbortJson(c, http.StatusBadRequest, err)
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}
+
+func (s *Board) PatchBoard(c *gin.Context) {
+	var req dto.ReqPatchBoard
+	if err := c.ShouldBind(&req); err != nil {
+		log.Info(err)
+		MwAbortJson(c, http.StatusBadRequest, err)
+		return
+	}
+	if req.Title == "" && req.Content == "" {
+		MwAbortJson(c, http.StatusBadRequest, errors.New("please put patch data"))
 		return
 	}
 	c.Set("req", req)

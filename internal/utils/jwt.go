@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -28,6 +29,7 @@ func UserTokenExtract(c *gin.Context) {
 	accessMetaData, err := ExtractTokenMetadata(c.Request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 	c.Set("token", accessMetaData)
@@ -81,7 +83,11 @@ func JwtTokenValid(r *http.Request) error {
 }
 
 func VerifyToken(r *http.Request) (*jwt.Token, error) {
-	tokenString := ExtractToken(r)
+	tokenString, err := ExtractToken(r)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		//Make sure that the token method conform to "SigningMethodHMAC"
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -97,22 +103,24 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 	return token, nil
 }
 
-func ExtractToken(r *http.Request) string {
+func ExtractToken(r *http.Request) (string, error) {
 	bearToken := r.Header.Get("Authorization")
-	//normally Authorization the_token_xxx
 	strArr := strings.Split(bearToken, " ")
 	if len(strArr) == 2 {
-		return strArr[1]
+		// if strArr[1] == "null" {
+		// 	return "", errors.New("Token format is invalid")
+		// }
+		return strArr[1], nil
 	}
-	return ""
+	return "", errors.New("Token format is invalid")
 }
 
 func ExtractTokenMetadata(r *http.Request) (*dto.AccessClaims, error) {
 	token, err := VerifyToken(r)
-
 	if err != nil {
 		return nil, err
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
 
 	if ok && token.Valid {

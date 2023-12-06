@@ -42,4 +42,6 @@ func RouteBoard(r *gin.Engine, c controller.Board) {
 	api.POST("/", mwBoard.CreateBoard, utils.UserTokenExtract, c.CreateBoard)
 	api.GET("/recommend", mwBoard.RecommendBoard, c.RecommendBoard)
 	api.GET("/hot", c.HotBoardList)
+	api.DELETE("/:id", mwBoard.DeleteBoard, utils.UserTokenExtract, c.DeleteBoard)
+	api.PATCH("/", mwBoard.PatchBoard, utils.UserTokenExtract, c.PatchBoard)
 }
