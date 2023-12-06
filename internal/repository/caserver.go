@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-board/ent"
 	"github.com/go-board/ent/user"
+	"github.com/go-board/log"
 )
 
 type CaServer struct {
@@ -20,7 +21,7 @@ func (r *CaServer) CaServerList(ctx context.Context) ([]*ent.CaServer, error) {
 	query := r.client.CaServer.Query()
 	list, err := query.All(ctx)
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return nil, err
 	}
 
@@ -36,7 +37,7 @@ func (r *CaServer) CreateCaServer(ctx context.Context, name string) (*ent.CaServ
 		Save(ctx)
 
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return nil, err
 	}
 	return user, nil
@@ -50,7 +51,7 @@ func (r *CaServer) UsersCaServer(ctx context.Context, name string) ([]*ent.CaSer
 
 	list, err := query.All(ctx)
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return nil, err
 	}
 	return list, nil

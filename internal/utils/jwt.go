@@ -13,6 +13,7 @@ import (
 	"github.com/go-board/configs"
 	"github.com/go-board/internal/dto"
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/gommon/log"
 )
 
 type Token struct {
@@ -42,7 +43,7 @@ func CreateJwtToken(name string) (string, string, error) {
 	accessSecretKey := os.Getenv("ACCESS_SECRET_KEY")
 	accessTokenString, err := accessToken.SignedString([]byte(accessSecretKey))
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return "", "", err
 	}
 
@@ -53,7 +54,7 @@ func CreateJwtToken(name string) (string, string, error) {
 	refreshSecretKey := os.Getenv("REFRESH_SECRET_KEY")
 	refresgTokenString, err := refreshToken.SignedString([]byte(refreshSecretKey))
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return "", "", err
 	}
 
@@ -64,7 +65,7 @@ func CreateJwtToken(name string) (string, string, error) {
 	hsetValue = append(hsetValue, "accessMetaData", accessTokenString, "refreshMetaData", refresgTokenString)
 	err = redis.HSet(ctx, name+"_jwtToken", hsetValue).Err()
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return "", "", err
 	}
 	return accessTokenString, refresgTokenString, nil
@@ -84,19 +85,19 @@ func JwtTokenValid(r *http.Request) error {
 func VerifyToken(r *http.Request) (*jwt.Token, error) {
 	tokenString, err := ExtractToken(r)
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return nil, err
 	}
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		//Make sure that the token method conform to "SigningMethodHMAC"
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			//tmp log.Error(fmt.Errorf("unexpected signing method: %v", token.Header["alg"]))
+			log.Error(fmt.Errorf("unexpected signing method: %v", token.Header["alg"]))
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(os.Getenv("ACCESS_SECRET_KEY")), nil
 	})
 	if err != nil {
-		//tmp log.Error(err)
+		log.Error(err)
 		return nil, err
 	}
 	return token, nil
@@ -131,8 +132,8 @@ func ExtractTokenMetadata(r *http.Request) (*dto.AccessClaims, error) {
 		if !ok {
 			return nil, err
 		}
-		//tmp log.Infof("username: %s", username.(string))
-		//tmp log.Infof("expireTime: %v", expireTime.(float64))
+		log.Infof("username: %s", username.(string))
+		log.Infof("expireTime: %v", expireTime.(float64))
 
 		accessData := dto.AccessClaims{
 			Username:   username.(string),

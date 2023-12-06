@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -15,7 +14,7 @@ import (
 	"github.com/go-board/internal/controller"
 	"github.com/go-board/internal/repository"
 	"github.com/go-board/internal/service"
-	//"github.com/the-medium-tech/platform-externals/log"
+	"github.com/go-board/log"
 )
 
 type Server struct {
@@ -123,9 +122,9 @@ func (s *Server) Start(ServerPort string) error {
 		Handler: s.Router,
 	}
 
-	//tmp log.Infof("Listening and serving HTTP on %s\n", srv.Addr)
+	log.Infof("Listening and serving HTTP on %s\n", srv.Addr)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		//tmp log.Error("listen: %s\n", err)
+		log.Error("listen: %s\n", err)
 		return err
 	}
 

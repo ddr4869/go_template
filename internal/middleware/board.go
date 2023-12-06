@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/controller"
 	"github.com/go-board/internal/dto"
+	"github.com/go-board/log"
 )
 
 type Board struct {
@@ -20,7 +21,7 @@ func NewBoard(board controller.Board) *Board {
 func (s *Board) UserBoardList(c *gin.Context) {
 	var req dto.ReqUserBoardList
 	if err := c.ShouldBind(&req); err != nil {
-		//tmp log.Info(err)
+		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}
@@ -31,7 +32,7 @@ func (s *Board) UserBoardList(c *gin.Context) {
 func (s *Board) CreateBoard(c *gin.Context) {
 	var req dto.ReqCreateBoard
 	if err := c.ShouldBind(&req); err != nil {
-		//tmp log.Info(err)
+		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}
@@ -42,7 +43,7 @@ func (s *Board) CreateBoard(c *gin.Context) {
 func (s *Board) DeleteBoard(c *gin.Context) {
 	var req dto.ReqDeleteBoard
 	if err := c.ShouldBindUri(&req); err != nil {
-		//tmp log.Info(err)
+		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}
@@ -53,7 +54,7 @@ func (s *Board) DeleteBoard(c *gin.Context) {
 func (s *Board) PatchBoard(c *gin.Context) {
 	var req dto.ReqPatchBoard
 	if err := c.ShouldBind(&req); err != nil {
-		//tmp log.Info(err)
+		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}
@@ -68,7 +69,7 @@ func (s *Board) PatchBoard(c *gin.Context) {
 func (s *Board) RecommendBoard(c *gin.Context) {
 	var req dto.ReqRecommendBoard
 	if err := c.ShouldBind(&req); err != nil {
-		//tmp log.Info(err)
+		log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}

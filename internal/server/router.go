@@ -5,7 +5,7 @@ import (
 	"github.com/go-board/internal/controller"
 	"github.com/go-board/internal/middleware"
 	"github.com/go-board/internal/utils"
-	// "github.com/the-medium-tech/platform-externals/log"
+	// "github.com/go-board/log"
 )
 
 func (s *Server) Routes() {

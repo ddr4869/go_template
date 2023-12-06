@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-board/configs"
 	"github.com/go-board/internal/server"
+	"github.com/go-board/log"
 	"github.com/joho/godotenv"
 )
 
@@ -26,7 +27,7 @@ func main() {
 
 	if err := server.Start(cfg.Backend.ServerPort); err != nil {
 		//log.Fatal("staring failed: ", err)
-		//tmp log.Errorf("staring failed: ", err)
+		log.Errorf("staring failed: ", err)
 		os.Exit(1)
 	}
 
