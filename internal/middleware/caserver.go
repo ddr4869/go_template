@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/controller"
 	"github.com/go-board/internal/dto"
-	"github.com/the-medium-tech/platform-externals/log"
 )
 
 type CaServer struct {
@@ -20,7 +19,7 @@ func NewCaServer(caserver controller.CaServer) *CaServer {
 func (s *CaServer) CreateCaServer(c *gin.Context) {
 	var req dto.ReqCreateCaServer
 	if err := c.ShouldBind(&req); err != nil {
-		log.Info(err)
+		//tmp log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}
@@ -31,7 +30,7 @@ func (s *CaServer) CreateCaServer(c *gin.Context) {
 func (s *CaServer) UserCaServerList(c *gin.Context) {
 	var req dto.ReqUserCaServer
 	if err := c.ShouldBind(&req); err != nil {
-		log.Info(err)
+		//tmp log.Info(err)
 		MwAbortJson(c, http.StatusBadRequest, err)
 		return
 	}

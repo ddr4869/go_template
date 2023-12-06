@@ -3,8 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/the-medium-tech/platform-externals/log"
-
 	"github.com/go-board/configs"
 	"github.com/go-board/internal/server"
 	"github.com/joho/godotenv"
@@ -28,7 +26,7 @@ func main() {
 
 	if err := server.Start(cfg.Backend.ServerPort); err != nil {
 		//log.Fatal("staring failed: ", err)
-		log.Errorf("staring failed: ", err)
+		//tmp log.Errorf("staring failed: ", err)
 		os.Exit(1)
 	}
 

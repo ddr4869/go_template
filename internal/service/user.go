@@ -6,7 +6,6 @@ import (
 	"github.com/go-board/internal/dto"
 	"github.com/go-board/internal/repository"
 	"github.com/go-board/internal/utils"
-	"github.com/the-medium-tech/platform-externals/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -50,20 +49,20 @@ func (s *User) CreateUser(c *gin.Context, name, description, password string) (*
 func (s *User) UserLogin(c *gin.Context, name, password string) (*dto.User, error) {
 	user, err := s.user.GetUser(c, name)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 
 	err = CompareHashAndPassword(user.Password, []byte(password))
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 
 	// ACCESS KEY 발급
 	accessTokenString, refreshTokenString, err := utils.CreateJwtToken(name)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 

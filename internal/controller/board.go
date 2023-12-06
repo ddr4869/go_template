@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-board/internal/dto"
 	"github.com/go-board/internal/service"
-	"github.com/the-medium-tech/platform-externals/log"
 )
 
 type Board struct {
@@ -29,7 +28,7 @@ func (s *Board) BoardList(c *gin.Context) {
 func (s *Board) UserBoardList(c *gin.Context) {
 
 	token := c.MustGet("token").(*dto.AccessClaims)
-	log.Infof("token: %+v", token)
+	//tmp log.Infof("token: %+v", token)
 	boards, err := s.board.UserBoardList(c, token.Username)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)

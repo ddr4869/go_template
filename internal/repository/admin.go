@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-board/ent"
-	"github.com/the-medium-tech/platform-externals/log"
 )
 
 type Admin struct {
@@ -20,7 +19,7 @@ func (r *Admin) AdminList(ctx context.Context) ([]*ent.Admin, error) {
 	query := r.client.Admin.Query()
 	list, err := query.All(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return list, nil
@@ -33,7 +32,7 @@ func (r *Admin) CreateAdmin(ctx context.Context, name string) (*ent.Admin, error
 		Save(ctx)
 
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return Admin, nil

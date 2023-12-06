@@ -6,7 +6,6 @@ import (
 	"github.com/go-board/ent"
 	"github.com/go-board/ent/board"
 	"github.com/go-board/ent/user"
-	"github.com/the-medium-tech/platform-externals/log"
 )
 
 type Board struct {
@@ -22,7 +21,7 @@ func (r *Board) BoardList(ctx context.Context) ([]*ent.Board, error) {
 	query := r.client.Board.Query()
 	list, err := query.All(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return list, nil
@@ -33,7 +32,7 @@ func (r *Board) UserBoardList(ctx context.Context, writer string) ([]*ent.Board,
 	query := r.client.User.Query().Where(user.Name(writer)).QueryBoard()
 	list, err := query.All(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return list, nil
@@ -43,7 +42,7 @@ func (r *Board) CreateBoard(ctx context.Context, title, content, writer string) 
 
 	user, err := r.client.User.Query().Where(user.Name(writer)).Only(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 
@@ -55,7 +54,7 @@ func (r *Board) CreateBoard(ctx context.Context, title, content, writer string) 
 		Save(ctx)
 
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return Board, nil
@@ -64,7 +63,7 @@ func (r *Board) CreateBoard(ctx context.Context, title, content, writer string) 
 func (r *Board) ReadBoard(ctx context.Context, boardId int) (*ent.Board, error) {
 	board, err := r.client.Board.UpdateOneID(uint(boardId)).AddView(1).Save(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return board, nil
@@ -73,7 +72,7 @@ func (r *Board) ReadBoard(ctx context.Context, boardId int) (*ent.Board, error) 
 func (r *Board) DeleteBoard(ctx context.Context, boardId int) error {
 	err := r.client.Board.DeleteOneID(uint(boardId)).Exec(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return err
 	}
 	return nil
@@ -89,7 +88,7 @@ func (r *Board) PatchBoard(ctx context.Context, boardId int, title, content stri
 	}
 	patchBoard, err := query.Save(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return patchBoard, nil
@@ -101,7 +100,7 @@ func (r *Board) RecommendBoard(ctx context.Context, boardId int) (int, error) {
 		Save(ctx)
 
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return -1, err
 	}
 
@@ -112,7 +111,7 @@ func (r *Board) TurnToHotBoard(ctx context.Context, boardId int) error {
 
 	_, err := r.client.Board.UpdateOneID(uint(boardId)).SetHot(true).Save(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return err
 	}
 	return nil
@@ -122,7 +121,7 @@ func (r *Board) HotBoardList(ctx context.Context) ([]*ent.Board, error) {
 
 	boards, err := r.client.Board.Query().Where(board.Hot(true)).All(ctx)
 	if err != nil {
-		log.Error(err)
+		//tmp log.Error(err)
 		return nil, err
 	}
 	return boards, nil
