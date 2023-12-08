@@ -15,6 +15,8 @@ import (
 	"github.com/go-board/ent/admin"
 	"github.com/go-board/ent/board"
 	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/nonuser"
+	"github.com/go-board/ent/payment"
 	"github.com/go-board/ent/user"
 )
 
@@ -79,6 +81,8 @@ func checkColumn(table, column string) error {
 			admin.Table:    admin.ValidColumn,
 			board.Table:    board.ValidColumn,
 			caserver.Table: caserver.ValidColumn,
+			nonuser.Table:  nonuser.ValidColumn,
+			payment.Table:  payment.ValidColumn,
 			user.Table:     user.ValidColumn,
 		})
 	})

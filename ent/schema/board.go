@@ -31,7 +31,7 @@ func (Board) Fields() []ent.Field {
 func (Board) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
-			Ref("board").
+			Ref("boards").
 			Unique().
 			Required(),
 	}

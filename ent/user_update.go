@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/go-board/ent/board"
 	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/payment"
 	"github.com/go-board/ent/predicate"
 	"github.com/go-board/ent/user"
 )
@@ -30,23 +31,23 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetName sets the "name" field.
-func (uu *UserUpdate) SetName(s string) *UserUpdate {
-	uu.mutation.SetName(s)
-	return uu
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetName(*s)
-	}
-	return uu
-}
-
 // SetPassword sets the "password" field.
 func (uu *UserUpdate) SetPassword(b []byte) *UserUpdate {
 	uu.mutation.SetPassword(b)
+	return uu
+}
+
+// SetGrade sets the "grade" field.
+func (uu *UserUpdate) SetGrade(s string) *UserUpdate {
+	uu.mutation.SetGrade(s)
+	return uu
+}
+
+// SetNillableGrade sets the "grade" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableGrade(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetGrade(*s)
+	}
 	return uu
 }
 
@@ -93,19 +94,34 @@ func (uu *UserUpdate) AddCaserver(c ...*CaServer) *UserUpdate {
 	return uu.AddCaserverIDs(ids...)
 }
 
-// AddBoardIDs adds the "board" edge to the Board entity by IDs.
+// AddBoardIDs adds the "boards" edge to the Board entity by IDs.
 func (uu *UserUpdate) AddBoardIDs(ids ...uint) *UserUpdate {
 	uu.mutation.AddBoardIDs(ids...)
 	return uu
 }
 
-// AddBoard adds the "board" edges to the Board entity.
-func (uu *UserUpdate) AddBoard(b ...*Board) *UserUpdate {
+// AddBoards adds the "boards" edges to the Board entity.
+func (uu *UserUpdate) AddBoards(b ...*Board) *UserUpdate {
 	ids := make([]uint, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
 	return uu.AddBoardIDs(ids...)
+}
+
+// AddPaymentIDs adds the "payment" edge to the Payment entity by IDs.
+func (uu *UserUpdate) AddPaymentIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddPaymentIDs(ids...)
+	return uu
+}
+
+// AddPayment adds the "payment" edges to the Payment entity.
+func (uu *UserUpdate) AddPayment(p ...*Payment) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.AddPaymentIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -134,25 +150,46 @@ func (uu *UserUpdate) RemoveCaserver(c ...*CaServer) *UserUpdate {
 	return uu.RemoveCaserverIDs(ids...)
 }
 
-// ClearBoard clears all "board" edges to the Board entity.
-func (uu *UserUpdate) ClearBoard() *UserUpdate {
-	uu.mutation.ClearBoard()
+// ClearBoards clears all "boards" edges to the Board entity.
+func (uu *UserUpdate) ClearBoards() *UserUpdate {
+	uu.mutation.ClearBoards()
 	return uu
 }
 
-// RemoveBoardIDs removes the "board" edge to Board entities by IDs.
+// RemoveBoardIDs removes the "boards" edge to Board entities by IDs.
 func (uu *UserUpdate) RemoveBoardIDs(ids ...uint) *UserUpdate {
 	uu.mutation.RemoveBoardIDs(ids...)
 	return uu
 }
 
-// RemoveBoard removes "board" edges to Board entities.
-func (uu *UserUpdate) RemoveBoard(b ...*Board) *UserUpdate {
+// RemoveBoards removes "boards" edges to Board entities.
+func (uu *UserUpdate) RemoveBoards(b ...*Board) *UserUpdate {
 	ids := make([]uint, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
 	return uu.RemoveBoardIDs(ids...)
+}
+
+// ClearPayment clears all "payment" edges to the Payment entity.
+func (uu *UserUpdate) ClearPayment() *UserUpdate {
+	uu.mutation.ClearPayment()
+	return uu
+}
+
+// RemovePaymentIDs removes the "payment" edge to Payment entities by IDs.
+func (uu *UserUpdate) RemovePaymentIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemovePaymentIDs(ids...)
+	return uu
+}
+
+// RemovePayment removes "payment" edges to Payment entities.
+func (uu *UserUpdate) RemovePayment(p ...*Payment) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.RemovePaymentIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -184,14 +221,14 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uu *UserUpdate) check() error {
-	if v, ok := uu.mutation.Name(); ok {
-		if err := user.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "User.name": %w`, err)}
-		}
-	}
 	if v, ok := uu.mutation.Password(); ok {
 		if err := user.PasswordValidator(v); err != nil {
 			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "User.password": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Grade(); ok {
+		if err := user.GradeValidator(v); err != nil {
+			return &ValidationError{Name: "grade", err: fmt.Errorf(`ent: validator failed for field "User.grade": %w`, err)}
 		}
 	}
 	return nil
@@ -201,7 +238,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := uu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -209,11 +246,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.Name(); ok {
-		_spec.SetField(user.FieldName, field.TypeString, value)
-	}
 	if value, ok := uu.mutation.Password(); ok {
 		_spec.SetField(user.FieldPassword, field.TypeBytes, value)
+	}
+	if value, ok := uu.mutation.Grade(); ok {
+		_spec.SetField(user.FieldGrade, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.Description(); ok {
 		_spec.SetField(user.FieldDescription, field.TypeString, value)
@@ -266,12 +303,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.BoardCleared() {
+	if uu.mutation.BoardsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
@@ -279,12 +316,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedBoardIDs(); len(nodes) > 0 && !uu.mutation.BoardCleared() {
+	if nodes := uu.mutation.RemovedBoardsIDs(); len(nodes) > 0 && !uu.mutation.BoardsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
@@ -295,15 +332,60 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.BoardIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.BoardsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.PaymentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedPaymentIDs(); len(nodes) > 0 && !uu.mutation.PaymentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.PaymentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -331,23 +413,23 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetName sets the "name" field.
-func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
-	uuo.mutation.SetName(s)
-	return uuo
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetName(*s)
-	}
-	return uuo
-}
-
 // SetPassword sets the "password" field.
 func (uuo *UserUpdateOne) SetPassword(b []byte) *UserUpdateOne {
 	uuo.mutation.SetPassword(b)
+	return uuo
+}
+
+// SetGrade sets the "grade" field.
+func (uuo *UserUpdateOne) SetGrade(s string) *UserUpdateOne {
+	uuo.mutation.SetGrade(s)
+	return uuo
+}
+
+// SetNillableGrade sets the "grade" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGrade(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetGrade(*s)
+	}
 	return uuo
 }
 
@@ -394,19 +476,34 @@ func (uuo *UserUpdateOne) AddCaserver(c ...*CaServer) *UserUpdateOne {
 	return uuo.AddCaserverIDs(ids...)
 }
 
-// AddBoardIDs adds the "board" edge to the Board entity by IDs.
+// AddBoardIDs adds the "boards" edge to the Board entity by IDs.
 func (uuo *UserUpdateOne) AddBoardIDs(ids ...uint) *UserUpdateOne {
 	uuo.mutation.AddBoardIDs(ids...)
 	return uuo
 }
 
-// AddBoard adds the "board" edges to the Board entity.
-func (uuo *UserUpdateOne) AddBoard(b ...*Board) *UserUpdateOne {
+// AddBoards adds the "boards" edges to the Board entity.
+func (uuo *UserUpdateOne) AddBoards(b ...*Board) *UserUpdateOne {
 	ids := make([]uint, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
 	return uuo.AddBoardIDs(ids...)
+}
+
+// AddPaymentIDs adds the "payment" edge to the Payment entity by IDs.
+func (uuo *UserUpdateOne) AddPaymentIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddPaymentIDs(ids...)
+	return uuo
+}
+
+// AddPayment adds the "payment" edges to the Payment entity.
+func (uuo *UserUpdateOne) AddPayment(p ...*Payment) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.AddPaymentIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -435,25 +532,46 @@ func (uuo *UserUpdateOne) RemoveCaserver(c ...*CaServer) *UserUpdateOne {
 	return uuo.RemoveCaserverIDs(ids...)
 }
 
-// ClearBoard clears all "board" edges to the Board entity.
-func (uuo *UserUpdateOne) ClearBoard() *UserUpdateOne {
-	uuo.mutation.ClearBoard()
+// ClearBoards clears all "boards" edges to the Board entity.
+func (uuo *UserUpdateOne) ClearBoards() *UserUpdateOne {
+	uuo.mutation.ClearBoards()
 	return uuo
 }
 
-// RemoveBoardIDs removes the "board" edge to Board entities by IDs.
+// RemoveBoardIDs removes the "boards" edge to Board entities by IDs.
 func (uuo *UserUpdateOne) RemoveBoardIDs(ids ...uint) *UserUpdateOne {
 	uuo.mutation.RemoveBoardIDs(ids...)
 	return uuo
 }
 
-// RemoveBoard removes "board" edges to Board entities.
-func (uuo *UserUpdateOne) RemoveBoard(b ...*Board) *UserUpdateOne {
+// RemoveBoards removes "boards" edges to Board entities.
+func (uuo *UserUpdateOne) RemoveBoards(b ...*Board) *UserUpdateOne {
 	ids := make([]uint, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
 	return uuo.RemoveBoardIDs(ids...)
+}
+
+// ClearPayment clears all "payment" edges to the Payment entity.
+func (uuo *UserUpdateOne) ClearPayment() *UserUpdateOne {
+	uuo.mutation.ClearPayment()
+	return uuo
+}
+
+// RemovePaymentIDs removes the "payment" edge to Payment entities by IDs.
+func (uuo *UserUpdateOne) RemovePaymentIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemovePaymentIDs(ids...)
+	return uuo
+}
+
+// RemovePayment removes "payment" edges to Payment entities.
+func (uuo *UserUpdateOne) RemovePayment(p ...*Payment) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.RemovePaymentIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -498,14 +616,14 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uuo *UserUpdateOne) check() error {
-	if v, ok := uuo.mutation.Name(); ok {
-		if err := user.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "User.name": %w`, err)}
-		}
-	}
 	if v, ok := uuo.mutation.Password(); ok {
 		if err := user.PasswordValidator(v); err != nil {
 			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "User.password": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Grade(); ok {
+		if err := user.GradeValidator(v); err != nil {
+			return &ValidationError{Name: "grade", err: fmt.Errorf(`ent: validator failed for field "User.grade": %w`, err)}
 		}
 	}
 	return nil
@@ -515,7 +633,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if err := uuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -540,11 +658,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			}
 		}
 	}
-	if value, ok := uuo.mutation.Name(); ok {
-		_spec.SetField(user.FieldName, field.TypeString, value)
-	}
 	if value, ok := uuo.mutation.Password(); ok {
 		_spec.SetField(user.FieldPassword, field.TypeBytes, value)
+	}
+	if value, ok := uuo.mutation.Grade(); ok {
+		_spec.SetField(user.FieldGrade, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.Description(); ok {
 		_spec.SetField(user.FieldDescription, field.TypeString, value)
@@ -597,12 +715,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.BoardCleared() {
+	if uuo.mutation.BoardsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
@@ -610,12 +728,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedBoardIDs(); len(nodes) > 0 && !uuo.mutation.BoardCleared() {
+	if nodes := uuo.mutation.RemovedBoardsIDs(); len(nodes) > 0 && !uuo.mutation.BoardsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
@@ -626,15 +744,60 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.BoardIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.BoardsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BoardTable,
-			Columns: []string{user.BoardColumn},
+			Table:   user.BoardsTable,
+			Columns: []string{user.BoardsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(board.FieldID, field.TypeUint),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.PaymentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedPaymentIDs(); len(nodes) > 0 && !uuo.mutation.PaymentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.PaymentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentTable,
+			Columns: []string{user.PaymentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(payment.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -13,6 +13,7 @@ func (s *Server) Routes() {
 	RouteUser(r, s.controller["user"].(controller.User))
 	RouteCaServer(r, s.controller["caserver"].(controller.CaServer))
 	RouteBoard(r, s.controller["board"].(controller.Board))
+	RoutePayment(r, s.controller["payment"].(controller.Payment))
 }
 
 func RouteUser(r *gin.Engine, c controller.User) {
@@ -44,4 +45,11 @@ func RouteBoard(r *gin.Engine, c controller.Board) {
 	api.GET("/hot", c.HotBoardList)
 	api.DELETE("/:id", mwBoard.DeleteBoard, utils.UserTokenExtract, c.DeleteBoard)
 	api.PATCH("/", mwBoard.PatchBoard, utils.UserTokenExtract, c.PatchBoard)
+}
+
+func RoutePayment(r *gin.Engine, c controller.Payment) {
+	api := r.Group("/payment")
+	mwPayment := middleware.NewPayment(c)
+	api.POST("/", mwPayment.CreatePayment, utils.UserTokenExtract, c.CreatePayment)
+
 }

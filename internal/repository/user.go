@@ -29,7 +29,7 @@ func (r *User) UserList(ctx context.Context) ([]*ent.User, error) {
 
 func (r *User) GetUser(ctx context.Context, name string) (*ent.User, error) {
 
-	query := r.client.User.Query().Where(user.Name(name))
+	query := r.client.User.Query().Where(user.ID(name))
 	list, err := query.Only(ctx)
 	if err != nil {
 		log.Error(err)
@@ -41,7 +41,7 @@ func (r *User) GetUser(ctx context.Context, name string) (*ent.User, error) {
 func (r *User) CreateUser(ctx context.Context, name, description string, password []byte) (*ent.User, error) {
 
 	user, err := r.client.User.Create().
-		SetName(name).
+		SetID(name).
 		SetDescription(description).
 		SetPassword(password).
 		Save(ctx)
@@ -51,15 +51,4 @@ func (r *User) CreateUser(ctx context.Context, name, description string, passwor
 		return nil, err
 	}
 	return user, nil
-}
-
-func (r *User) UserLogin(ctx context.Context) ([]*ent.User, error) {
-
-	query := r.client.User.Query()
-	list, err := query.All(ctx)
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	return list, nil
 }

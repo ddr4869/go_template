@@ -27,7 +27,7 @@ func (s *User) UserList(c *gin.Context) ([]dto.UserDto, error) {
 	return convertUserArrayEntToDto(users), nil
 }
 
-func (s *User) CreateUser(c *gin.Context, name, description, password string) (*dto.User, error) {
+func (s *User) CreateUser(c *gin.Context, name, description, password string) (*dto.UserDto, error) {
 
 	pwByte, err := PasswordEncryption([]byte(password))
 	if err != nil {
@@ -39,15 +39,15 @@ func (s *User) CreateUser(c *gin.Context, name, description, password string) (*
 		return nil, err
 	}
 
-	dtoUser := dto.User{
-		Name:        user.Name,
+	dtoUser := dto.UserDto{
+		Name:        user.ID,
 		Description: user.Description,
 	}
 
 	return &dtoUser, nil
 }
 
-func (s *User) UserLogin(c *gin.Context, name, password string) (*dto.User, error) {
+func (s *User) UserLogin(c *gin.Context, name, password string) (*dto.UserLogin, error) {
 	user, err := s.user.GetUser(c, name)
 	if err != nil {
 		log.Error(err)
@@ -61,14 +61,14 @@ func (s *User) UserLogin(c *gin.Context, name, password string) (*dto.User, erro
 	}
 
 	// ACCESS KEY 발급
-	accessTokenString, refreshTokenString, err := utils.CreateJwtToken(name)
+	accessTokenString, refreshTokenString, err := utils.CreateJwtToken(name, user.Grade)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	dto_user := dto.User{
-		Name:         user.Name,
+	dto_user := dto.UserLogin{
+		Name:         user.ID,
 		Description:  user.Description,
 		AccessToken:  accessTokenString,
 		RefreshToken: refreshTokenString,
@@ -92,7 +92,7 @@ func convertUserArrayEntToDto(entUsers []*ent.User) []dto.UserDto {
 	dto_users := make([]dto.UserDto, 0)
 	for _, v := range entUsers {
 		dto_user := dto.UserDto{
-			Name:        v.Name,
+			Name:        v.ID,
 			Description: v.Description,
 			CreatedDate: v.CreatedDate,
 		}

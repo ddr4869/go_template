@@ -13,19 +13,27 @@ const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
+	FieldID = "name"
 	// FieldPassword holds the string denoting the password field in the database.
 	FieldPassword = "password"
+	// FieldGrade holds the string denoting the grade field in the database.
+	FieldGrade = "grade"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
 	// FieldCreatedDate holds the string denoting the created_date field in the database.
 	FieldCreatedDate = "created_date"
 	// EdgeCaserver holds the string denoting the caserver edge name in mutations.
 	EdgeCaserver = "caserver"
-	// EdgeBoard holds the string denoting the board edge name in mutations.
-	EdgeBoard = "board"
+	// EdgeBoards holds the string denoting the boards edge name in mutations.
+	EdgeBoards = "boards"
+	// EdgePayment holds the string denoting the payment edge name in mutations.
+	EdgePayment = "payment"
+	// CaServerFieldID holds the string denoting the ID field of the CaServer.
+	CaServerFieldID = "id"
+	// BoardFieldID holds the string denoting the ID field of the Board.
+	BoardFieldID = "id"
+	// PaymentFieldID holds the string denoting the ID field of the Payment.
+	PaymentFieldID = "id"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// CaserverTable is the table that holds the caserver relation/edge.
@@ -35,20 +43,27 @@ const (
 	CaserverInverseTable = "ca_servers"
 	// CaserverColumn is the table column denoting the caserver relation/edge.
 	CaserverColumn = "user_caserver"
-	// BoardTable is the table that holds the board relation/edge.
-	BoardTable = "boards"
-	// BoardInverseTable is the table name for the Board entity.
+	// BoardsTable is the table that holds the boards relation/edge.
+	BoardsTable = "boards"
+	// BoardsInverseTable is the table name for the Board entity.
 	// It exists in this package in order to avoid circular dependency with the "board" package.
-	BoardInverseTable = "boards"
-	// BoardColumn is the table column denoting the board relation/edge.
-	BoardColumn = "user_board"
+	BoardsInverseTable = "boards"
+	// BoardsColumn is the table column denoting the boards relation/edge.
+	BoardsColumn = "user_boards"
+	// PaymentTable is the table that holds the payment relation/edge.
+	PaymentTable = "payments"
+	// PaymentInverseTable is the table name for the Payment entity.
+	// It exists in this package in order to avoid circular dependency with the "payment" package.
+	PaymentInverseTable = "payments"
+	// PaymentColumn is the table column denoting the payment relation/edge.
+	PaymentColumn = "user_payment"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
 	FieldPassword,
+	FieldGrade,
 	FieldDescription,
 	FieldCreatedDate,
 }
@@ -64,14 +79,18 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// NameValidator is a validator for the "name" field. It is called by the builders before save.
-	NameValidator func(string) error
 	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
 	PasswordValidator func([]byte) error
+	// DefaultGrade holds the default value on creation for the "grade" field.
+	DefaultGrade string
+	// GradeValidator is a validator for the "grade" field. It is called by the builders before save.
+	GradeValidator func(string) error
 	// DefaultDescription holds the default value on creation for the "description" field.
 	DefaultDescription string
 	// DefaultCreatedDate holds the default value on creation for the "created_date" field.
 	DefaultCreatedDate time.Time
+	// IDValidator is a validator for the "id" field. It is called by the builders before save.
+	IDValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the User queries.
@@ -82,9 +101,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldName, opts...).ToFunc()
+// ByGrade orders the results by the grade field.
+func ByGrade(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGrade, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
@@ -111,30 +130,51 @@ func ByCaserver(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByBoardCount orders the results by board count.
-func ByBoardCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBoardsCount orders the results by boards count.
+func ByBoardsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBoardStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newBoardsStep(), opts...)
 	}
 }
 
-// ByBoard orders the results by board terms.
-func ByBoard(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByBoards orders the results by boards terms.
+func ByBoards(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBoardStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBoardsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPaymentCount orders the results by payment count.
+func ByPaymentCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPaymentStep(), opts...)
+	}
+}
+
+// ByPayment orders the results by payment terms.
+func ByPayment(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPaymentStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newCaserverStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CaserverInverseTable, FieldID),
+		sqlgraph.To(CaserverInverseTable, CaServerFieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, CaserverTable, CaserverColumn),
 	)
 }
-func newBoardStep() *sqlgraph.Step {
+func newBoardsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(BoardInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, BoardTable, BoardColumn),
+		sqlgraph.To(BoardsInverseTable, BoardFieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, BoardsTable, BoardsColumn),
+	)
+}
+func newPaymentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PaymentInverseTable, PaymentFieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PaymentTable, PaymentColumn),
 	)
 }

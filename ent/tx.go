@@ -18,6 +18,10 @@ type Tx struct {
 	Board *BoardClient
 	// CaServer is the client for interacting with the CaServer builders.
 	CaServer *CaServerClient
+	// NonUser is the client for interacting with the NonUser builders.
+	NonUser *NonUserClient
+	// Payment is the client for interacting with the Payment builders.
+	Payment *PaymentClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -154,6 +158,8 @@ func (tx *Tx) init() {
 	tx.Admin = NewAdminClient(tx.config)
 	tx.Board = NewBoardClient(tx.config)
 	tx.CaServer = NewCaServerClient(tx.config)
+	tx.NonUser = NewNonUserClient(tx.config)
+	tx.Payment = NewPaymentClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

@@ -409,13 +409,13 @@ func (bq *BoardQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Board,
 }
 
 func (bq *BoardQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Board, init func(*Board), assign func(*Board, *User)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Board)
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*Board)
 	for i := range nodes {
-		if nodes[i].user_board == nil {
+		if nodes[i].user_boards == nil {
 			continue
 		}
-		fk := *nodes[i].user_board
+		fk := *nodes[i].user_boards
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -432,7 +432,7 @@ func (bq *BoardQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*B
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_board" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_boards" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

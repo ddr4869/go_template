@@ -27,7 +27,7 @@ func (csc *CaServerCreate) SetName(s string) *CaServerCreate {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (csc *CaServerCreate) SetUserID(id int) *CaServerCreate {
+func (csc *CaServerCreate) SetUserID(id string) *CaServerCreate {
 	csc.mutation.SetUserID(id)
 	return csc
 }
@@ -120,7 +120,7 @@ func (csc *CaServerCreate) createSpec() (*CaServer, *sqlgraph.CreateSpec) {
 			Columns: []string{caserver.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

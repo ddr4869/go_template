@@ -409,8 +409,8 @@ func (csq *CaServerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ca
 }
 
 func (csq *CaServerQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*CaServer, init func(*CaServer), assign func(*CaServer, *User)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*CaServer)
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*CaServer)
 	for i := range nodes {
 		if nodes[i].user_caserver == nil {
 			continue

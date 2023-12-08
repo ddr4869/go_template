@@ -142,7 +142,7 @@ func (bu *BoardUpdate) SetNillableCreatedDate(t *time.Time) *BoardUpdate {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (bu *BoardUpdate) SetUserID(id int) *BoardUpdate {
+func (bu *BoardUpdate) SetUserID(id string) *BoardUpdate {
 	bu.mutation.SetUserID(id)
 	return bu
 }
@@ -255,7 +255,7 @@ func (bu *BoardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{board.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -268,7 +268,7 @@ func (bu *BoardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{board.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -409,7 +409,7 @@ func (buo *BoardUpdateOne) SetNillableCreatedDate(t *time.Time) *BoardUpdateOne 
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (buo *BoardUpdateOne) SetUserID(id int) *BoardUpdateOne {
+func (buo *BoardUpdateOne) SetUserID(id string) *BoardUpdateOne {
 	buo.mutation.SetUserID(id)
 	return buo
 }
@@ -552,7 +552,7 @@ func (buo *BoardUpdateOne) sqlSave(ctx context.Context) (_node *Board, err error
 			Columns: []string{board.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -565,7 +565,7 @@ func (buo *BoardUpdateOne) sqlSave(ctx context.Context) (_node *Board, err error
 			Columns: []string{board.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

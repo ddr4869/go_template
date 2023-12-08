@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/go-board/ent/board"
 	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/payment"
 	"github.com/go-board/ent/predicate"
 	"github.com/go-board/ent/user"
 )
@@ -25,7 +26,8 @@ type UserQuery struct {
 	inters       []Interceptor
 	predicates   []predicate.User
 	withCaserver *CaServerQuery
-	withBoard    *BoardQuery
+	withBoards   *BoardQuery
+	withPayment  *PaymentQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -84,8 +86,8 @@ func (uq *UserQuery) QueryCaserver() *CaServerQuery {
 	return query
 }
 
-// QueryBoard chains the current query on the "board" edge.
-func (uq *UserQuery) QueryBoard() *BoardQuery {
+// QueryBoards chains the current query on the "boards" edge.
+func (uq *UserQuery) QueryBoards() *BoardQuery {
 	query := (&BoardClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -98,7 +100,29 @@ func (uq *UserQuery) QueryBoard() *BoardQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(board.Table, board.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.BoardTable, user.BoardColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.BoardsTable, user.BoardsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPayment chains the current query on the "payment" edge.
+func (uq *UserQuery) QueryPayment() *PaymentQuery {
+	query := (&PaymentClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(payment.Table, payment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PaymentTable, user.PaymentColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -130,8 +154,8 @@ func (uq *UserQuery) FirstX(ctx context.Context) *User {
 
 // FirstID returns the first User ID from the query.
 // Returns a *NotFoundError when no User ID was found.
-func (uq *UserQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (uq *UserQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = uq.Limit(1).IDs(setContextOp(ctx, uq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -143,7 +167,7 @@ func (uq *UserQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (uq *UserQuery) FirstIDX(ctx context.Context) int {
+func (uq *UserQuery) FirstIDX(ctx context.Context) string {
 	id, err := uq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -181,8 +205,8 @@ func (uq *UserQuery) OnlyX(ctx context.Context) *User {
 // OnlyID is like Only, but returns the only User ID in the query.
 // Returns a *NotSingularError when more than one User ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (uq *UserQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (uq *UserQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = uq.Limit(2).IDs(setContextOp(ctx, uq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -198,7 +222,7 @@ func (uq *UserQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (uq *UserQuery) OnlyIDX(ctx context.Context) int {
+func (uq *UserQuery) OnlyIDX(ctx context.Context) string {
 	id, err := uq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,7 +250,7 @@ func (uq *UserQuery) AllX(ctx context.Context) []*User {
 }
 
 // IDs executes the query and returns a list of User IDs.
-func (uq *UserQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (uq *UserQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if uq.ctx.Unique == nil && uq.path != nil {
 		uq.Unique(true)
 	}
@@ -238,7 +262,7 @@ func (uq *UserQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (uq *UserQuery) IDsX(ctx context.Context) []int {
+func (uq *UserQuery) IDsX(ctx context.Context) []string {
 	ids, err := uq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -299,7 +323,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 		inters:       append([]Interceptor{}, uq.inters...),
 		predicates:   append([]predicate.User{}, uq.predicates...),
 		withCaserver: uq.withCaserver.Clone(),
-		withBoard:    uq.withBoard.Clone(),
+		withBoards:   uq.withBoards.Clone(),
+		withPayment:  uq.withPayment.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -317,14 +342,25 @@ func (uq *UserQuery) WithCaserver(opts ...func(*CaServerQuery)) *UserQuery {
 	return uq
 }
 
-// WithBoard tells the query-builder to eager-load the nodes that are connected to
-// the "board" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithBoard(opts ...func(*BoardQuery)) *UserQuery {
+// WithBoards tells the query-builder to eager-load the nodes that are connected to
+// the "boards" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithBoards(opts ...func(*BoardQuery)) *UserQuery {
 	query := (&BoardClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withBoard = query
+	uq.withBoards = query
+	return uq
+}
+
+// WithPayment tells the query-builder to eager-load the nodes that are connected to
+// the "payment" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithPayment(opts ...func(*PaymentQuery)) *UserQuery {
+	query := (&PaymentClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withPayment = query
 	return uq
 }
 
@@ -334,12 +370,12 @@ func (uq *UserQuery) WithBoard(opts ...func(*BoardQuery)) *UserQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Password []byte `json:"password,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		GroupBy(user.FieldName).
+//		GroupBy(user.FieldPassword).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
@@ -357,11 +393,11 @@ func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Password []byte `json:"password,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		Select(user.FieldName).
+//		Select(user.FieldPassword).
 //		Scan(ctx, &v)
 func (uq *UserQuery) Select(fields ...string) *UserSelect {
 	uq.ctx.Fields = append(uq.ctx.Fields, fields...)
@@ -406,9 +442,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			uq.withCaserver != nil,
-			uq.withBoard != nil,
+			uq.withBoards != nil,
+			uq.withPayment != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -436,10 +473,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withBoard; query != nil {
-		if err := uq.loadBoard(ctx, query, nodes,
-			func(n *User) { n.Edges.Board = []*Board{} },
-			func(n *User, e *Board) { n.Edges.Board = append(n.Edges.Board, e) }); err != nil {
+	if query := uq.withBoards; query != nil {
+		if err := uq.loadBoards(ctx, query, nodes,
+			func(n *User) { n.Edges.Boards = []*Board{} },
+			func(n *User, e *Board) { n.Edges.Boards = append(n.Edges.Boards, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withPayment; query != nil {
+		if err := uq.loadPayment(ctx, query, nodes,
+			func(n *User) { n.Edges.Payment = []*Payment{} },
+			func(n *User, e *Payment) { n.Edges.Payment = append(n.Edges.Payment, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -448,7 +492,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 
 func (uq *UserQuery) loadCaserver(ctx context.Context, query *CaServerQuery, nodes []*User, init func(*User), assign func(*User, *CaServer)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*User)
+	nodeids := make(map[string]*User)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -477,9 +521,9 @@ func (uq *UserQuery) loadCaserver(ctx context.Context, query *CaServerQuery, nod
 	}
 	return nil
 }
-func (uq *UserQuery) loadBoard(ctx context.Context, query *BoardQuery, nodes []*User, init func(*User), assign func(*User, *Board)) error {
+func (uq *UserQuery) loadBoards(ctx context.Context, query *BoardQuery, nodes []*User, init func(*User), assign func(*User, *Board)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*User)
+	nodeids := make(map[string]*User)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -489,20 +533,51 @@ func (uq *UserQuery) loadBoard(ctx context.Context, query *BoardQuery, nodes []*
 	}
 	query.withFKs = true
 	query.Where(predicate.Board(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.BoardColumn), fks...))
+		s.Where(sql.InValues(s.C(user.BoardsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_board
+		fk := n.user_boards
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_board" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_boards" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_board" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_boards" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadPayment(ctx context.Context, query *PaymentQuery, nodes []*User, init func(*User), assign func(*User, *Payment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Payment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.PaymentColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_payment
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_payment" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_payment" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -519,7 +594,7 @@ func (uq *UserQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (uq *UserQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	_spec.From = uq.sql
 	if unique := uq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

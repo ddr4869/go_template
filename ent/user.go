@@ -16,11 +16,11 @@ import (
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Password holds the value of the "password" field.
 	Password []byte `json:"password,omitempty"`
+	// Grade holds the value of the "grade" field.
+	Grade string `json:"grade,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// CreatedDate holds the value of the "created_date" field.
@@ -35,11 +35,13 @@ type User struct {
 type UserEdges struct {
 	// Caserver holds the value of the caserver edge.
 	Caserver []*CaServer `json:"caserver,omitempty"`
-	// Board holds the value of the board edge.
-	Board []*Board `json:"board,omitempty"`
+	// Boards holds the value of the boards edge.
+	Boards []*Board `json:"boards,omitempty"`
+	// Payment holds the value of the payment edge.
+	Payment []*Payment `json:"payment,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // CaserverOrErr returns the Caserver value or an error if the edge
@@ -51,13 +53,22 @@ func (e UserEdges) CaserverOrErr() ([]*CaServer, error) {
 	return nil, &NotLoadedError{edge: "caserver"}
 }
 
-// BoardOrErr returns the Board value or an error if the edge
+// BoardsOrErr returns the Boards value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) BoardOrErr() ([]*Board, error) {
+func (e UserEdges) BoardsOrErr() ([]*Board, error) {
 	if e.loadedTypes[1] {
-		return e.Board, nil
+		return e.Boards, nil
 	}
-	return nil, &NotLoadedError{edge: "board"}
+	return nil, &NotLoadedError{edge: "boards"}
+}
+
+// PaymentOrErr returns the Payment value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PaymentOrErr() ([]*Payment, error) {
+	if e.loadedTypes[2] {
+		return e.Payment, nil
+	}
+	return nil, &NotLoadedError{edge: "payment"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -67,9 +78,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldPassword:
 			values[i] = new([]byte)
-		case user.FieldID:
-			values[i] = new(sql.NullInt64)
-		case user.FieldName, user.FieldDescription:
+		case user.FieldID, user.FieldGrade, user.FieldDescription:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedDate:
 			values[i] = new(sql.NullTime)
@@ -89,22 +98,22 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			u.ID = int(value.Int64)
-		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				u.Name = value.String
+				u.ID = value.String
 			}
 		case user.FieldPassword:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field password", values[i])
 			} else if value != nil {
 				u.Password = *value
+			}
+		case user.FieldGrade:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field grade", values[i])
+			} else if value.Valid {
+				u.Grade = value.String
 			}
 		case user.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -136,9 +145,14 @@ func (u *User) QueryCaserver() *CaServerQuery {
 	return NewUserClient(u.config).QueryCaserver(u)
 }
 
-// QueryBoard queries the "board" edge of the User entity.
-func (u *User) QueryBoard() *BoardQuery {
-	return NewUserClient(u.config).QueryBoard(u)
+// QueryBoards queries the "boards" edge of the User entity.
+func (u *User) QueryBoards() *BoardQuery {
+	return NewUserClient(u.config).QueryBoards(u)
+}
+
+// QueryPayment queries the "payment" edge of the User entity.
+func (u *User) QueryPayment() *PaymentQuery {
+	return NewUserClient(u.config).QueryPayment(u)
 }
 
 // Update returns a builder for updating this User.
@@ -164,11 +178,11 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
-	builder.WriteString("name=")
-	builder.WriteString(u.Name)
-	builder.WriteString(", ")
 	builder.WriteString("password=")
 	builder.WriteString(fmt.Sprintf("%v", u.Password))
+	builder.WriteString(", ")
+	builder.WriteString("grade=")
+	builder.WriteString(u.Grade)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(u.Description)

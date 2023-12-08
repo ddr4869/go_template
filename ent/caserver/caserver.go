@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
+	// UserFieldID holds the string denoting the ID field of the User.
+	UserFieldID = "name"
 	// Table holds the table name of the caserver in the database.
 	Table = "ca_servers"
 	// UserTable is the table that holds the user relation/edge.
@@ -81,7 +83,7 @@ func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.To(UserInverseTable, UserFieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 	)
 }

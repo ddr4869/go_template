@@ -16,10 +16,17 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").NotEmpty().Unique(),
+		field.String("id").StorageKey("name").NotEmpty().Unique(),
 		field.Bytes("password").MaxLen(255).NotEmpty(),
-		field.String("description").
-			Default("none"),
+		// field.String("email").NotEmpty().Unique(),
+		// field.String("tel").NotEmpty().Unique(),
+		// field.String("postcode").NotEmpty(),
+		// field.String("address").NotEmpty(),
+		// field.String("detail_address").NotEmpty(),
+		field.String("grade").NotEmpty().Default("BRONZE"),
+		// field.String("extraAddress").NotEmpty().Unique(),
+		// field.Bool("delete").Default(false),
+		field.String("description").Default("none"),
 		field.Time("created_date").Default(time.Now()),
 	}
 }
@@ -28,6 +35,7 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("caserver", CaServer.Type),
-		edge.To("board", Board.Type),
+		edge.To("boards", Board.Type),
+		edge.To("payment", Payment.Type),
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type User struct {
+type UserLogin struct {
 	Name         string
 	Description  string
 	AccessToken  string
@@ -32,11 +32,15 @@ type ReqLoginUser struct {
 }
 
 type AccessClaims struct {
+	UuID       uuid.UUID
 	Username   string
+	UserGrade  string
 	ExpireTime float64
 }
 
 type RefreshClaims struct {
-	UuID     uuid.UUID
-	Username string
+	UuID       uuid.UUID
+	Username   string
+	UserGrade  string
+	ExpireTime float64
 }

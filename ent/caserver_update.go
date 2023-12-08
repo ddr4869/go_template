@@ -43,7 +43,7 @@ func (csu *CaServerUpdate) SetNillableName(s *string) *CaServerUpdate {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (csu *CaServerUpdate) SetUserID(id int) *CaServerUpdate {
+func (csu *CaServerUpdate) SetUserID(id string) *CaServerUpdate {
 	csu.mutation.SetUserID(id)
 	return csu
 }
@@ -127,7 +127,7 @@ func (csu *CaServerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{caserver.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -140,7 +140,7 @@ func (csu *CaServerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{caserver.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -183,7 +183,7 @@ func (csuo *CaServerUpdateOne) SetNillableName(s *string) *CaServerUpdateOne {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (csuo *CaServerUpdateOne) SetUserID(id int) *CaServerUpdateOne {
+func (csuo *CaServerUpdateOne) SetUserID(id string) *CaServerUpdateOne {
 	csuo.mutation.SetUserID(id)
 	return csuo
 }
@@ -297,7 +297,7 @@ func (csuo *CaServerUpdateOne) sqlSave(ctx context.Context) (_node *CaServer, er
 			Columns: []string{caserver.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -310,7 +310,7 @@ func (csuo *CaServerUpdateOne) sqlSave(ctx context.Context) (_node *CaServer, er
 			Columns: []string{caserver.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

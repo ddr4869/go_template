@@ -32,7 +32,7 @@ func (r *CaServer) CreateCaServer(ctx context.Context, name string) (*ent.CaServ
 
 	user, err := r.client.CaServer.Create().
 		SetName(name).
-		SetUserID(10).
+		SetUserID(name).
 		//SetUser("qwe").
 		Save(ctx)
 
@@ -46,7 +46,7 @@ func (r *CaServer) CreateCaServer(ctx context.Context, name string) (*ent.CaServ
 func (r *CaServer) UsersCaServer(ctx context.Context, name string) ([]*ent.CaServer, error) {
 
 	query := r.client.User.Query().
-		Where(user.Name(name)).
+		Where(user.ID(name)).
 		QueryCaserver()
 
 	list, err := query.All(ctx)

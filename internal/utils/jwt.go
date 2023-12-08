@@ -14,6 +14,8 @@ import (
 	"github.com/go-board/internal/dto"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/gommon/log"
+
+	"github.com/google/uuid"
 )
 
 type Token struct {
@@ -35,10 +37,13 @@ func UserTokenExtract(c *gin.Context) {
 	c.Set("token", accessMetaData)
 }
 
-func CreateJwtToken(name string) (string, string, error) {
+func CreateJwtToken(name, grade string) (string, string, error) {
+	userUuid := uuid.New().String()
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": name,
-		"exp":      time.Now().Add(time.Minute * 15).Unix(),
+		"uuid":      userUuid,
+		"userName":  name,
+		"userGrade": grade,
+		"exp":       time.Now().Add(time.Minute * 15).Unix(),
 	})
 	accessSecretKey := os.Getenv("ACCESS_SECRET_KEY")
 	accessTokenString, err := accessToken.SignedString([]byte(accessSecretKey))
@@ -48,8 +53,10 @@ func CreateJwtToken(name string) (string, string, error) {
 	}
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": name,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		"uuid":      userUuid,
+		"userName":  name,
+		"userGrade": grade,
+		"exp":       time.Now().Add(time.Hour * 24).Unix(),
 	})
 	refreshSecretKey := os.Getenv("REFRESH_SECRET_KEY")
 	refresgTokenString, err := refreshToken.SignedString([]byte(refreshSecretKey))
@@ -124,7 +131,15 @@ func ExtractTokenMetadata(r *http.Request) (*dto.AccessClaims, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 
 	if ok && token.Valid {
-		username, ok := claims["username"]
+		userUuid, ok := claims["uuid"]
+		if !ok {
+			return nil, err
+		}
+		userName, ok := claims["userName"]
+		if !ok {
+			return nil, err
+		}
+		userGrade, ok := claims["userGrade"]
 		if !ok {
 			return nil, err
 		}
@@ -132,11 +147,17 @@ func ExtractTokenMetadata(r *http.Request) (*dto.AccessClaims, error) {
 		if !ok {
 			return nil, err
 		}
-		log.Infof("username: %s", username.(string))
-		log.Infof("expireTime: %v", expireTime.(float64))
 
+		uuidStr := userUuid.(string)
+		uuidParsed, err := uuid.Parse(uuidStr)
+		if err != nil {
+			log.Infof("uuid.Parse uuid.Parse uuid.Parse: %+v", userUuid)
+			return nil, err
+		}
 		accessData := dto.AccessClaims{
-			Username:   username.(string),
+			UuID:       uuidParsed,
+			Username:   userName.(string),
+			UserGrade:  userGrade.(string),
 			ExpireTime: expireTime.(float64),
 		}
 		return &accessData, nil

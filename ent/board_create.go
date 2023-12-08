@@ -102,7 +102,7 @@ func (bc *BoardCreate) SetID(u uint) *BoardCreate {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (bc *BoardCreate) SetUserID(id int) *BoardCreate {
+func (bc *BoardCreate) SetUserID(id string) *BoardCreate {
 	bc.mutation.SetUserID(id)
 	return bc
 }
@@ -269,13 +269,13 @@ func (bc *BoardCreate) createSpec() (*Board, *sqlgraph.CreateSpec) {
 			Columns: []string{board.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_board = &nodes[0]
+		_node.user_boards = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

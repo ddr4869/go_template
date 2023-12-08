@@ -22,7 +22,7 @@ type CaServer struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CaServerQuery when eager-loading is set.
 	Edges         CaServerEdges `json:"edges"`
-	user_caserver *int
+	user_caserver *string
 	selectValues  sql.SelectValues
 }
 
@@ -58,7 +58,7 @@ func (*CaServer) scanValues(columns []string) ([]any, error) {
 		case caserver.FieldName:
 			values[i] = new(sql.NullString)
 		case caserver.ForeignKeys[0]: // user_caserver
-			values[i] = new(sql.NullInt64)
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -87,11 +87,11 @@ func (cs *CaServer) assignValues(columns []string, values []any) error {
 				cs.Name = value.String
 			}
 		case caserver.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_caserver", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_caserver", values[i])
 			} else if value.Valid {
-				cs.user_caserver = new(int)
-				*cs.user_caserver = int(value.Int64)
+				cs.user_caserver = new(string)
+				*cs.user_caserver = value.String
 			}
 		default:
 			cs.selectValues.Set(columns[i], values[i])

@@ -28,6 +28,7 @@ func NewDefaultServer(clinet *ent.Client) *Server {
 		"user":     *controller.NewUser(*service.NewUser(*repository.NewUser(clinet))),
 		"caserver": *controller.NewCaServer(*service.NewCaServer(*repository.NewCaServer(clinet))),
 		"board":    *controller.NewBoard(*service.NewBoard(*repository.NewBoard(clinet))),
+		"payment":  *controller.NewPayment(*service.NewPayment(*repository.NewPayment(clinet))),
 	}
 	middleware := map[string]interface{}{}
 

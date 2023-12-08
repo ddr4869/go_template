@@ -3,12 +3,23 @@
 action=$1
 tag=$2
 
-if [ "$action" == "build" ]; then
-    docker build -t go-board:$tag .
-fi
-if [ "$action" == "tag" ]; then
-    docker tag go-board:$tag spspid/go-board:$tag
-fi
-if [ "$action" == "push" ]; then
-    docker push spspid/go-board:$tag
-fi
+case $action in
+    "build")
+        docker build -t go-board:$tag .
+        ;;
+    "tag")
+        docker tag go-board:$tag spspid/go-board:$tag
+        ;;
+    "push")
+        docker push spspid/go-board:$tag
+        ;;
+    "all")
+        docker build -t go-board:$tag .
+        docker tag go-board:$tag spspid/go-board:$tag
+        docker push spspid/go-board:$tag
+        ;;
+    *)
+        echo "Choose one in [build|tag|push|all]"
+        exit 1
+        ;;
+esac

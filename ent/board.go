@@ -35,7 +35,7 @@ type Board struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BoardQuery when eager-loading is set.
 	Edges        BoardEdges `json:"edges"`
-	user_board   *int
+	user_boards  *string
 	selectValues sql.SelectValues
 }
 
@@ -74,8 +74,8 @@ func (*Board) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case board.FieldCreatedDate:
 			values[i] = new(sql.NullTime)
-		case board.ForeignKeys[0]: // user_board
-			values[i] = new(sql.NullInt64)
+		case board.ForeignKeys[0]: // user_boards
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -140,11 +140,11 @@ func (b *Board) assignValues(columns []string, values []any) error {
 				b.CreatedDate = value.Time
 			}
 		case board.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_board", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_boards", values[i])
 			} else if value.Valid {
-				b.user_board = new(int)
-				*b.user_board = int(value.Int64)
+				b.user_boards = new(string)
+				*b.user_boards = value.String
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])

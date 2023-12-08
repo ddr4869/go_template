@@ -30,7 +30,7 @@ func (r *Board) BoardList(ctx context.Context) ([]*ent.Board, error) {
 
 func (r *Board) UserBoardList(ctx context.Context, writer string) ([]*ent.Board, error) {
 
-	query := r.client.User.Query().Where(user.Name(writer)).QueryBoard()
+	query := r.client.User.Query().Where(user.ID(writer)).QueryBoards()
 	list, err := query.All(ctx)
 	if err != nil {
 		log.Error(err)
@@ -41,7 +41,7 @@ func (r *Board) UserBoardList(ctx context.Context, writer string) ([]*ent.Board,
 
 func (r *Board) CreateBoard(ctx context.Context, title, content, writer string) (*ent.Board, error) {
 
-	user, err := r.client.User.Query().Where(user.Name(writer)).Only(ctx)
+	user, err := r.client.User.Query().Where(user.ID(writer)).Only(ctx)
 	if err != nil {
 		log.Error(err)
 		return nil, err

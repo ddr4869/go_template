@@ -18,6 +18,8 @@ import (
 	"github.com/go-board/ent/admin"
 	"github.com/go-board/ent/board"
 	"github.com/go-board/ent/caserver"
+	"github.com/go-board/ent/nonuser"
+	"github.com/go-board/ent/payment"
 	"github.com/go-board/ent/user"
 )
 
@@ -32,6 +34,10 @@ type Client struct {
 	Board *BoardClient
 	// CaServer is the client for interacting with the CaServer builders.
 	CaServer *CaServerClient
+	// NonUser is the client for interacting with the NonUser builders.
+	NonUser *NonUserClient
+	// Payment is the client for interacting with the Payment builders.
+	Payment *PaymentClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -48,6 +54,8 @@ func (c *Client) init() {
 	c.Admin = NewAdminClient(c.config)
 	c.Board = NewBoardClient(c.config)
 	c.CaServer = NewCaServerClient(c.config)
+	c.NonUser = NewNonUserClient(c.config)
+	c.Payment = NewPaymentClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -144,6 +152,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Admin:    NewAdminClient(cfg),
 		Board:    NewBoardClient(cfg),
 		CaServer: NewCaServerClient(cfg),
+		NonUser:  NewNonUserClient(cfg),
+		Payment:  NewPaymentClient(cfg),
 		User:     NewUserClient(cfg),
 	}, nil
 }
@@ -167,6 +177,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Admin:    NewAdminClient(cfg),
 		Board:    NewBoardClient(cfg),
 		CaServer: NewCaServerClient(cfg),
+		NonUser:  NewNonUserClient(cfg),
+		Payment:  NewPaymentClient(cfg),
 		User:     NewUserClient(cfg),
 	}, nil
 }
@@ -196,19 +208,21 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Admin.Use(hooks...)
-	c.Board.Use(hooks...)
-	c.CaServer.Use(hooks...)
-	c.User.Use(hooks...)
+	for _, n := range []interface{ Use(...Hook) }{
+		c.Admin, c.Board, c.CaServer, c.NonUser, c.Payment, c.User,
+	} {
+		n.Use(hooks...)
+	}
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Admin.Intercept(interceptors...)
-	c.Board.Intercept(interceptors...)
-	c.CaServer.Intercept(interceptors...)
-	c.User.Intercept(interceptors...)
+	for _, n := range []interface{ Intercept(...Interceptor) }{
+		c.Admin, c.Board, c.CaServer, c.NonUser, c.Payment, c.User,
+	} {
+		n.Intercept(interceptors...)
+	}
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -220,6 +234,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Board.mutate(ctx, m)
 	case *CaServerMutation:
 		return c.CaServer.mutate(ctx, m)
+	case *NonUserMutation:
+		return c.NonUser.mutate(ctx, m)
+	case *PaymentMutation:
+		return c.Payment.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -658,6 +676,288 @@ func (c *CaServerClient) mutate(ctx context.Context, m *CaServerMutation) (Value
 	}
 }
 
+// NonUserClient is a client for the NonUser schema.
+type NonUserClient struct {
+	config
+}
+
+// NewNonUserClient returns a client for the NonUser from the given config.
+func NewNonUserClient(c config) *NonUserClient {
+	return &NonUserClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `nonuser.Hooks(f(g(h())))`.
+func (c *NonUserClient) Use(hooks ...Hook) {
+	c.hooks.NonUser = append(c.hooks.NonUser, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `nonuser.Intercept(f(g(h())))`.
+func (c *NonUserClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NonUser = append(c.inters.NonUser, interceptors...)
+}
+
+// Create returns a builder for creating a NonUser entity.
+func (c *NonUserClient) Create() *NonUserCreate {
+	mutation := newNonUserMutation(c.config, OpCreate)
+	return &NonUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NonUser entities.
+func (c *NonUserClient) CreateBulk(builders ...*NonUserCreate) *NonUserCreateBulk {
+	return &NonUserCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NonUserClient) MapCreateBulk(slice any, setFunc func(*NonUserCreate, int)) *NonUserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NonUserCreateBulk{err: fmt.Errorf("calling to NonUserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NonUserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NonUserCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NonUser.
+func (c *NonUserClient) Update() *NonUserUpdate {
+	mutation := newNonUserMutation(c.config, OpUpdate)
+	return &NonUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NonUserClient) UpdateOne(nu *NonUser) *NonUserUpdateOne {
+	mutation := newNonUserMutation(c.config, OpUpdateOne, withNonUser(nu))
+	return &NonUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NonUserClient) UpdateOneID(id int) *NonUserUpdateOne {
+	mutation := newNonUserMutation(c.config, OpUpdateOne, withNonUserID(id))
+	return &NonUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NonUser.
+func (c *NonUserClient) Delete() *NonUserDelete {
+	mutation := newNonUserMutation(c.config, OpDelete)
+	return &NonUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NonUserClient) DeleteOne(nu *NonUser) *NonUserDeleteOne {
+	return c.DeleteOneID(nu.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NonUserClient) DeleteOneID(id int) *NonUserDeleteOne {
+	builder := c.Delete().Where(nonuser.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NonUserDeleteOne{builder}
+}
+
+// Query returns a query builder for NonUser.
+func (c *NonUserClient) Query() *NonUserQuery {
+	return &NonUserQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNonUser},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NonUser entity by its id.
+func (c *NonUserClient) Get(ctx context.Context, id int) (*NonUser, error) {
+	return c.Query().Where(nonuser.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NonUserClient) GetX(ctx context.Context, id int) *NonUser {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *NonUserClient) Hooks() []Hook {
+	return c.hooks.NonUser
+}
+
+// Interceptors returns the client interceptors.
+func (c *NonUserClient) Interceptors() []Interceptor {
+	return c.inters.NonUser
+}
+
+func (c *NonUserClient) mutate(ctx context.Context, m *NonUserMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NonUserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NonUserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NonUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NonUserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NonUser mutation op: %q", m.Op())
+	}
+}
+
+// PaymentClient is a client for the Payment schema.
+type PaymentClient struct {
+	config
+}
+
+// NewPaymentClient returns a client for the Payment from the given config.
+func NewPaymentClient(c config) *PaymentClient {
+	return &PaymentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `payment.Hooks(f(g(h())))`.
+func (c *PaymentClient) Use(hooks ...Hook) {
+	c.hooks.Payment = append(c.hooks.Payment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `payment.Intercept(f(g(h())))`.
+func (c *PaymentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Payment = append(c.inters.Payment, interceptors...)
+}
+
+// Create returns a builder for creating a Payment entity.
+func (c *PaymentClient) Create() *PaymentCreate {
+	mutation := newPaymentMutation(c.config, OpCreate)
+	return &PaymentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Payment entities.
+func (c *PaymentClient) CreateBulk(builders ...*PaymentCreate) *PaymentCreateBulk {
+	return &PaymentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PaymentClient) MapCreateBulk(slice any, setFunc func(*PaymentCreate, int)) *PaymentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PaymentCreateBulk{err: fmt.Errorf("calling to PaymentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PaymentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PaymentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Payment.
+func (c *PaymentClient) Update() *PaymentUpdate {
+	mutation := newPaymentMutation(c.config, OpUpdate)
+	return &PaymentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PaymentClient) UpdateOne(pa *Payment) *PaymentUpdateOne {
+	mutation := newPaymentMutation(c.config, OpUpdateOne, withPayment(pa))
+	return &PaymentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PaymentClient) UpdateOneID(id int) *PaymentUpdateOne {
+	mutation := newPaymentMutation(c.config, OpUpdateOne, withPaymentID(id))
+	return &PaymentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Payment.
+func (c *PaymentClient) Delete() *PaymentDelete {
+	mutation := newPaymentMutation(c.config, OpDelete)
+	return &PaymentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PaymentClient) DeleteOne(pa *Payment) *PaymentDeleteOne {
+	return c.DeleteOneID(pa.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PaymentClient) DeleteOneID(id int) *PaymentDeleteOne {
+	builder := c.Delete().Where(payment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PaymentDeleteOne{builder}
+}
+
+// Query returns a query builder for Payment.
+func (c *PaymentClient) Query() *PaymentQuery {
+	return &PaymentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePayment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Payment entity by its id.
+func (c *PaymentClient) Get(ctx context.Context, id int) (*Payment, error) {
+	return c.Query().Where(payment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PaymentClient) GetX(ctx context.Context, id int) *Payment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a Payment.
+func (c *PaymentClient) QueryUser(pa *Payment) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(payment.Table, payment.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, payment.UserTable, payment.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(pa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PaymentClient) Hooks() []Hook {
+	return c.hooks.Payment
+}
+
+// Interceptors returns the client interceptors.
+func (c *PaymentClient) Interceptors() []Interceptor {
+	return c.inters.Payment
+}
+
+func (c *PaymentClient) mutate(ctx context.Context, m *PaymentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PaymentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PaymentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PaymentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PaymentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Payment mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -719,7 +1019,7 @@ func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
+func (c *UserClient) UpdateOneID(id string) *UserUpdateOne {
 	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -736,7 +1036,7 @@ func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
+func (c *UserClient) DeleteOneID(id string) *UserDeleteOne {
 	builder := c.Delete().Where(user.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -753,12 +1053,12 @@ func (c *UserClient) Query() *UserQuery {
 }
 
 // Get returns a User entity by its id.
-func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
+func (c *UserClient) Get(ctx context.Context, id string) (*User, error) {
 	return c.Query().Where(user.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *UserClient) GetX(ctx context.Context, id int) *User {
+func (c *UserClient) GetX(ctx context.Context, id string) *User {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -782,15 +1082,31 @@ func (c *UserClient) QueryCaserver(u *User) *CaServerQuery {
 	return query
 }
 
-// QueryBoard queries the board edge of a User.
-func (c *UserClient) QueryBoard(u *User) *BoardQuery {
+// QueryBoards queries the boards edge of a User.
+func (c *UserClient) QueryBoards(u *User) *BoardQuery {
 	query := (&BoardClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(board.Table, board.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.BoardTable, user.BoardColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.BoardsTable, user.BoardsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPayment queries the payment edge of a User.
+func (c *UserClient) QueryPayment(u *User) *PaymentQuery {
+	query := (&PaymentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(payment.Table, payment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PaymentTable, user.PaymentColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -826,9 +1142,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Admin, Board, CaServer, User []ent.Hook
+		Admin, Board, CaServer, NonUser, Payment, User []ent.Hook
 	}
 	inters struct {
-		Admin, Board, CaServer, User []ent.Interceptor
+		Admin, Board, CaServer, NonUser, Payment, User []ent.Interceptor
 	}
 )
