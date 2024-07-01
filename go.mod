@@ -2,7 +2,7 @@ module github.com/ddr4869/go_template
 
 go 1.22.2
 
-require github.com/ddr4869/msazoom v0.0.0-20240618141416-acea0d4829fc
+require github.com/ddr4869/go_template v0.0.0-20240618141416-acea0d4829fc
 
 require (
 	ariga.io/atlas v0.19.1-0.20240203083654-5948b60a8e43 // indirect

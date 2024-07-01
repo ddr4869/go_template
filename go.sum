@@ -21,8 +21,8 @@ github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQ
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/ddr4869/msazoom v0.0.0-20240618141416-acea0d4829fc h1:D3dyIdBnM/MlmapfbDbMoLwAEMC/YmRrq49tLkppSVY=
-github.com/ddr4869/msazoom v0.0.0-20240618141416-acea0d4829fc/go.mod h1:OmBZYM/lMufkfargfcTvZ2ps1ovGfsy3fXjUr7pJP08=
+github.com/ddr4869/go_template v0.0.0-20240618141416-acea0d4829fc h1:D3dyIdBnM/MlmapfbDbMoLwAEMC/YmRrq49tLkppSVY=
+github.com/ddr4869/go_template v0.0.0-20240618141416-acea0d4829fc/go.mod h1:OmBZYM/lMufkfargfcTvZ2ps1ovGfsy3fXjUr7pJP08=
 github.com/eapache/go-resiliency v1.6.0 h1:CqGDTLtpwuWKn6Nj3uNUdflaq+/kIPsg0gfNzHton30=
 github.com/eapache/go-resiliency v1.6.0/go.mod h1:5yPzW0MIvSe0JDsv0v+DvcjEv2FyD6iZYSs1ZI+iQho=
 github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 h1:Oy0F4ALJ04o5Qqpdz8XLIpNA3WM/iSIXqxtqo7UGVws=

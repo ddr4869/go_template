@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/ddr4869/msazoom/config"
-	"github.com/ddr4869/msazoom/internal"
+	"github.com/ddr4869/go_template/config"
+	"github.com/ddr4869/go_template/internal"
 )
 
 func main() {
