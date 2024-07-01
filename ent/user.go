@@ -5,70 +5,22 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/go-board/ent/user"
+	"github.com/ddr4869/go_template/ent/user"
 )
 
 // User is the model entity for the User schema.
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
-	// Password holds the value of the "password" field.
-	Password []byte `json:"password,omitempty"`
-	// Grade holds the value of the "grade" field.
-	Grade string `json:"grade,omitempty"`
-	// Description holds the value of the "description" field.
-	Description string `json:"description,omitempty"`
-	// CreatedDate holds the value of the "created_date" field.
-	CreatedDate time.Time `json:"created_date,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges        UserEdges `json:"edges"`
+	ID int `json:"id,omitempty"`
+	// Age holds the value of the "age" field.
+	Age int `json:"age,omitempty"`
+	// Name holds the value of the "name" field.
+	Name         string `json:"name,omitempty"`
 	selectValues sql.SelectValues
-}
-
-// UserEdges holds the relations/edges for other nodes in the graph.
-type UserEdges struct {
-	// Caserver holds the value of the caserver edge.
-	Caserver []*CaServer `json:"caserver,omitempty"`
-	// Boards holds the value of the boards edge.
-	Boards []*Board `json:"boards,omitempty"`
-	// Payment holds the value of the payment edge.
-	Payment []*Payment `json:"payment,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
-}
-
-// CaserverOrErr returns the Caserver value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) CaserverOrErr() ([]*CaServer, error) {
-	if e.loadedTypes[0] {
-		return e.Caserver, nil
-	}
-	return nil, &NotLoadedError{edge: "caserver"}
-}
-
-// BoardsOrErr returns the Boards value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) BoardsOrErr() ([]*Board, error) {
-	if e.loadedTypes[1] {
-		return e.Boards, nil
-	}
-	return nil, &NotLoadedError{edge: "boards"}
-}
-
-// PaymentOrErr returns the Payment value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) PaymentOrErr() ([]*Payment, error) {
-	if e.loadedTypes[2] {
-		return e.Payment, nil
-	}
-	return nil, &NotLoadedError{edge: "payment"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -76,12 +28,10 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldPassword:
-			values[i] = new([]byte)
-		case user.FieldID, user.FieldGrade, user.FieldDescription:
+		case user.FieldID, user.FieldAge:
+			values[i] = new(sql.NullInt64)
+		case user.FieldName:
 			values[i] = new(sql.NullString)
-		case user.FieldCreatedDate:
-			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -98,34 +48,22 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
+			}
+			u.ID = int(value.Int64)
+		case user.FieldAge:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field age", values[i])
+			} else if value.Valid {
+				u.Age = int(value.Int64)
+			}
+		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
+				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				u.ID = value.String
-			}
-		case user.FieldPassword:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field password", values[i])
-			} else if value != nil {
-				u.Password = *value
-			}
-		case user.FieldGrade:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field grade", values[i])
-			} else if value.Valid {
-				u.Grade = value.String
-			}
-		case user.FieldDescription:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field description", values[i])
-			} else if value.Valid {
-				u.Description = value.String
-			}
-		case user.FieldCreatedDate:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_date", values[i])
-			} else if value.Valid {
-				u.CreatedDate = value.Time
+				u.Name = value.String
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -138,21 +76,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
-}
-
-// QueryCaserver queries the "caserver" edge of the User entity.
-func (u *User) QueryCaserver() *CaServerQuery {
-	return NewUserClient(u.config).QueryCaserver(u)
-}
-
-// QueryBoards queries the "boards" edge of the User entity.
-func (u *User) QueryBoards() *BoardQuery {
-	return NewUserClient(u.config).QueryBoards(u)
-}
-
-// QueryPayment queries the "payment" edge of the User entity.
-func (u *User) QueryPayment() *PaymentQuery {
-	return NewUserClient(u.config).QueryPayment(u)
 }
 
 // Update returns a builder for updating this User.
@@ -178,17 +101,11 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
-	builder.WriteString("password=")
-	builder.WriteString(fmt.Sprintf("%v", u.Password))
+	builder.WriteString("age=")
+	builder.WriteString(fmt.Sprintf("%v", u.Age))
 	builder.WriteString(", ")
-	builder.WriteString("grade=")
-	builder.WriteString(u.Grade)
-	builder.WriteString(", ")
-	builder.WriteString("description=")
-	builder.WriteString(u.Description)
-	builder.WriteString(", ")
-	builder.WriteString("created_date=")
-	builder.WriteString(u.CreatedDate.Format(time.ANSIC))
+	builder.WriteString("name=")
+	builder.WriteString(u.Name)
 	builder.WriteByte(')')
 	return builder.String()
 }

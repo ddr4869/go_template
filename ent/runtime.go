@@ -3,181 +3,22 @@
 package ent
 
 import (
-	"time"
-
-	"github.com/go-board/ent/admin"
-	"github.com/go-board/ent/board"
-	"github.com/go-board/ent/caserver"
-	"github.com/go-board/ent/nonuser"
-	"github.com/go-board/ent/payment"
-	"github.com/go-board/ent/schema"
-	"github.com/go-board/ent/user"
+	"github.com/ddr4869/go_template/ent/schema"
+	"github.com/ddr4869/go_template/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	adminFields := schema.Admin{}.Fields()
-	_ = adminFields
-	// adminDescName is the schema descriptor for name field.
-	adminDescName := adminFields[0].Descriptor()
-	// admin.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	admin.NameValidator = adminDescName.Validators[0].(func(string) error)
-	// adminDescPassword is the schema descriptor for password field.
-	adminDescPassword := adminFields[1].Descriptor()
-	// admin.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	admin.PasswordValidator = func() func([]byte) error {
-		validators := adminDescPassword.Validators
-		fns := [...]func([]byte) error{
-			validators[0].(func([]byte) error),
-			validators[1].(func([]byte) error),
-		}
-		return func(password []byte) error {
-			for _, fn := range fns {
-				if err := fn(password); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// adminDescCreatedDate is the schema descriptor for created_date field.
-	adminDescCreatedDate := adminFields[2].Descriptor()
-	// admin.DefaultCreatedDate holds the default value on creation for the created_date field.
-	admin.DefaultCreatedDate = adminDescCreatedDate.Default.(time.Time)
-	boardFields := schema.Board{}.Fields()
-	_ = boardFields
-	// boardDescTitle is the schema descriptor for title field.
-	boardDescTitle := boardFields[1].Descriptor()
-	// board.TitleValidator is a validator for the "title" field. It is called by the builders before save.
-	board.TitleValidator = boardDescTitle.Validators[0].(func(string) error)
-	// boardDescWriter is the schema descriptor for writer field.
-	boardDescWriter := boardFields[3].Descriptor()
-	// board.WriterValidator is a validator for the "writer" field. It is called by the builders before save.
-	board.WriterValidator = boardDescWriter.Validators[0].(func(string) error)
-	// boardDescView is the schema descriptor for view field.
-	boardDescView := boardFields[4].Descriptor()
-	// board.DefaultView holds the default value on creation for the view field.
-	board.DefaultView = boardDescView.Default.(uint)
-	// boardDescRecommend is the schema descriptor for recommend field.
-	boardDescRecommend := boardFields[5].Descriptor()
-	// board.DefaultRecommend holds the default value on creation for the recommend field.
-	board.DefaultRecommend = boardDescRecommend.Default.(uint)
-	// boardDescHot is the schema descriptor for hot field.
-	boardDescHot := boardFields[6].Descriptor()
-	// board.DefaultHot holds the default value on creation for the hot field.
-	board.DefaultHot = boardDescHot.Default.(bool)
-	// boardDescCreatedDate is the schema descriptor for created_date field.
-	boardDescCreatedDate := boardFields[7].Descriptor()
-	// board.DefaultCreatedDate holds the default value on creation for the created_date field.
-	board.DefaultCreatedDate = boardDescCreatedDate.Default.(func() time.Time)
-	caserverFields := schema.CaServer{}.Fields()
-	_ = caserverFields
-	// caserverDescName is the schema descriptor for name field.
-	caserverDescName := caserverFields[0].Descriptor()
-	// caserver.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	caserver.NameValidator = caserverDescName.Validators[0].(func(string) error)
-	nonuserFields := schema.NonUser{}.Fields()
-	_ = nonuserFields
-	// nonuserDescName is the schema descriptor for name field.
-	nonuserDescName := nonuserFields[0].Descriptor()
-	// nonuser.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	nonuser.NameValidator = nonuserDescName.Validators[0].(func(string) error)
-	// nonuserDescPassword is the schema descriptor for password field.
-	nonuserDescPassword := nonuserFields[1].Descriptor()
-	// nonuser.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	nonuser.PasswordValidator = func() func([]byte) error {
-		validators := nonuserDescPassword.Validators
-		fns := [...]func([]byte) error{
-			validators[0].(func([]byte) error),
-			validators[1].(func([]byte) error),
-		}
-		return func(password []byte) error {
-			for _, fn := range fns {
-				if err := fn(password); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// nonuserDescTel is the schema descriptor for tel field.
-	nonuserDescTel := nonuserFields[2].Descriptor()
-	// nonuser.TelValidator is a validator for the "tel" field. It is called by the builders before save.
-	nonuser.TelValidator = nonuserDescTel.Validators[0].(func(string) error)
-	// nonuserDescDescription is the schema descriptor for description field.
-	nonuserDescDescription := nonuserFields[3].Descriptor()
-	// nonuser.DefaultDescription holds the default value on creation for the description field.
-	nonuser.DefaultDescription = nonuserDescDescription.Default.(string)
-	// nonuserDescCreatedDate is the schema descriptor for created_date field.
-	nonuserDescCreatedDate := nonuserFields[4].Descriptor()
-	// nonuser.DefaultCreatedDate holds the default value on creation for the created_date field.
-	nonuser.DefaultCreatedDate = nonuserDescCreatedDate.Default.(time.Time)
-	paymentFields := schema.Payment{}.Fields()
-	_ = paymentFields
-	// paymentDescGrade is the schema descriptor for grade field.
-	paymentDescGrade := paymentFields[1].Descriptor()
-	// payment.GradeValidator is a validator for the "grade" field. It is called by the builders before save.
-	payment.GradeValidator = func() func(string) error {
-		validators := paymentDescGrade.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(grade string) error {
-			for _, fn := range fns {
-				if err := fn(grade); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// paymentDescMovieID is the schema descriptor for movie_id field.
-	paymentDescMovieID := paymentFields[2].Descriptor()
-	// payment.MovieIDValidator is a validator for the "movie_id" field. It is called by the builders before save.
-	payment.MovieIDValidator = paymentDescMovieID.Validators[0].(func(string) error)
-	// paymentDescCreatedDate is the schema descriptor for created_date field.
-	paymentDescCreatedDate := paymentFields[3].Descriptor()
-	// payment.DefaultCreatedDate holds the default value on creation for the created_date field.
-	payment.DefaultCreatedDate = paymentDescCreatedDate.Default.(time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
-	// userDescPassword is the schema descriptor for password field.
-	userDescPassword := userFields[1].Descriptor()
-	// user.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	user.PasswordValidator = func() func([]byte) error {
-		validators := userDescPassword.Validators
-		fns := [...]func([]byte) error{
-			validators[0].(func([]byte) error),
-			validators[1].(func([]byte) error),
-		}
-		return func(password []byte) error {
-			for _, fn := range fns {
-				if err := fn(password); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// userDescGrade is the schema descriptor for grade field.
-	userDescGrade := userFields[2].Descriptor()
-	// user.DefaultGrade holds the default value on creation for the grade field.
-	user.DefaultGrade = userDescGrade.Default.(string)
-	// user.GradeValidator is a validator for the "grade" field. It is called by the builders before save.
-	user.GradeValidator = userDescGrade.Validators[0].(func(string) error)
-	// userDescDescription is the schema descriptor for description field.
-	userDescDescription := userFields[3].Descriptor()
-	// user.DefaultDescription holds the default value on creation for the description field.
-	user.DefaultDescription = userDescDescription.Default.(string)
-	// userDescCreatedDate is the schema descriptor for created_date field.
-	userDescCreatedDate := userFields[4].Descriptor()
-	// user.DefaultCreatedDate holds the default value on creation for the created_date field.
-	user.DefaultCreatedDate = userDescCreatedDate.Default.(time.Time)
-	// userDescID is the schema descriptor for id field.
-	userDescID := userFields[0].Descriptor()
-	// user.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	user.IDValidator = userDescID.Validators[0].(func(string) error)
+	// userDescAge is the schema descriptor for age field.
+	userDescAge := userFields[0].Descriptor()
+	// user.AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	user.AgeValidator = userDescAge.Validators[0].(func(int) error)
+	// userDescName is the schema descriptor for name field.
+	userDescName := userFields[1].Descriptor()
+	// user.DefaultName holds the default value on creation for the name field.
+	user.DefaultName = userDescName.Default.(string)
 }

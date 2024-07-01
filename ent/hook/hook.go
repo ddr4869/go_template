@@ -6,68 +6,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/go-board/ent"
+	"github.com/ddr4869/go_template/ent"
 )
-
-// The AdminFunc type is an adapter to allow the use of ordinary
-// function as Admin mutator.
-type AdminFunc func(context.Context, *ent.AdminMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f AdminFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AdminMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AdminMutation", m)
-}
-
-// The BoardFunc type is an adapter to allow the use of ordinary
-// function as Board mutator.
-type BoardFunc func(context.Context, *ent.BoardMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f BoardFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.BoardMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BoardMutation", m)
-}
-
-// The CaServerFunc type is an adapter to allow the use of ordinary
-// function as CaServer mutator.
-type CaServerFunc func(context.Context, *ent.CaServerMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f CaServerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.CaServerMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CaServerMutation", m)
-}
-
-// The NonUserFunc type is an adapter to allow the use of ordinary
-// function as NonUser mutator.
-type NonUserFunc func(context.Context, *ent.NonUserMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f NonUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.NonUserMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NonUserMutation", m)
-}
-
-// The PaymentFunc type is an adapter to allow the use of ordinary
-// function as Payment mutator.
-type PaymentFunc func(context.Context, *ent.PaymentMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PaymentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PaymentMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PaymentMutation", m)
-}
 
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.

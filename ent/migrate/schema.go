@@ -8,110 +8,11 @@ import (
 )
 
 var (
-	// AdminsColumns holds the columns for the "admins" table.
-	AdminsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "password", Type: field.TypeBytes, Size: 255},
-		{Name: "created_date", Type: field.TypeTime},
-	}
-	// AdminsTable holds the schema information for the "admins" table.
-	AdminsTable = &schema.Table{
-		Name:       "admins",
-		Columns:    AdminsColumns,
-		PrimaryKey: []*schema.Column{AdminsColumns[0]},
-	}
-	// BoardsColumns holds the columns for the "boards" table.
-	BoardsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint, Increment: true},
-		{Name: "title", Type: field.TypeString},
-		{Name: "content", Type: field.TypeString, Size: 2147483647},
-		{Name: "writer", Type: field.TypeString},
-		{Name: "view", Type: field.TypeUint, Default: 0},
-		{Name: "recommend", Type: field.TypeUint, Default: 0},
-		{Name: "hot", Type: field.TypeBool, Default: false},
-		{Name: "created_date", Type: field.TypeTime},
-		{Name: "user_boards", Type: field.TypeString},
-	}
-	// BoardsTable holds the schema information for the "boards" table.
-	BoardsTable = &schema.Table{
-		Name:       "boards",
-		Columns:    BoardsColumns,
-		PrimaryKey: []*schema.Column{BoardsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "boards_users_boards",
-				Columns:    []*schema.Column{BoardsColumns[8]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// CaServersColumns holds the columns for the "ca_servers" table.
-	CaServersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "user_caserver", Type: field.TypeString},
-	}
-	// CaServersTable holds the schema information for the "ca_servers" table.
-	CaServersTable = &schema.Table{
-		Name:       "ca_servers",
-		Columns:    CaServersColumns,
-		PrimaryKey: []*schema.Column{CaServersColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "ca_servers_users_caserver",
-				Columns:    []*schema.Column{CaServersColumns[2]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// NonUsersColumns holds the columns for the "non_users" table.
-	NonUsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "password", Type: field.TypeBytes, Size: 255},
-		{Name: "tel", Type: field.TypeString, Unique: true},
-		{Name: "description", Type: field.TypeString, Default: "none"},
-		{Name: "created_date", Type: field.TypeTime},
-	}
-	// NonUsersTable holds the schema information for the "non_users" table.
-	NonUsersTable = &schema.Table{
-		Name:       "non_users",
-		Columns:    NonUsersColumns,
-		PrimaryKey: []*schema.Column{NonUsersColumns[0]},
-	}
-	// PaymentsColumns holds the columns for the "payments" table.
-	PaymentsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_name", Type: field.TypeString},
-		{Name: "grade", Type: field.TypeString, Size: 255},
-		{Name: "movie_id", Type: field.TypeString},
-		{Name: "created_date", Type: field.TypeTime},
-		{Name: "user_payment", Type: field.TypeString},
-	}
-	// PaymentsTable holds the schema information for the "payments" table.
-	PaymentsTable = &schema.Table{
-		Name:       "payments",
-		Columns:    PaymentsColumns,
-		PrimaryKey: []*schema.Column{PaymentsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "payments_users_payment",
-				Columns:    []*schema.Column{PaymentsColumns[5]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "password", Type: field.TypeBytes, Size: 255},
-		{Name: "grade", Type: field.TypeString, Default: "BRONZE"},
-		{Name: "description", Type: field.TypeString, Default: "none"},
-		{Name: "created_date", Type: field.TypeTime},
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "age", Type: field.TypeInt},
+		{Name: "name", Type: field.TypeString, Default: "unknown"},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -121,17 +22,9 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		AdminsTable,
-		BoardsTable,
-		CaServersTable,
-		NonUsersTable,
-		PaymentsTable,
 		UsersTable,
 	}
 )
 
 func init() {
-	BoardsTable.ForeignKeys[0].RefTable = UsersTable
-	CaServersTable.ForeignKeys[0].RefTable = UsersTable
-	PaymentsTable.ForeignKeys[0].RefTable = UsersTable
 }

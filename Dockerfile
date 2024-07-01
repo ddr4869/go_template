@@ -1,14 +1,20 @@
-# 기본 이미지 선택
-FROM golang:1.20-alpine
+FROM golang:1.22.2-alpine as builder
 
-# 작업 디렉토리 설정
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+
 WORKDIR /app
 
-# 필요한 파일 복사
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 COPY . .
 
-# Go 애플리케이션 빌드
-RUN go build -o myapp .
+RUN go build -o go_template
 
-# 애플리케이션 실행 명령어
-CMD ["./myapp"]
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+
+COPY --from=builder /app/go_template /go_template
+COPY .env .env
+
+CMD ["/go_template"]

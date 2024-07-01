@@ -12,16 +12,6 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Admin is the client for interacting with the Admin builders.
-	Admin *AdminClient
-	// Board is the client for interacting with the Board builders.
-	Board *BoardClient
-	// CaServer is the client for interacting with the CaServer builders.
-	CaServer *CaServerClient
-	// NonUser is the client for interacting with the NonUser builders.
-	NonUser *NonUserClient
-	// Payment is the client for interacting with the Payment builders.
-	Payment *PaymentClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -155,11 +145,6 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Admin = NewAdminClient(tx.config)
-	tx.Board = NewBoardClient(tx.config)
-	tx.CaServer = NewCaServerClient(tx.config)
-	tx.NonUser = NewNonUserClient(tx.config)
-	tx.Payment = NewPaymentClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 
@@ -170,7 +155,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Admin.QueryXXX(), the query will be executed
+// applies a query, for example: User.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

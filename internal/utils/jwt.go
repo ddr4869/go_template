@@ -1,166 +1,59 @@
 package utils
 
 import (
-	"context"
-	"errors"
-	"fmt"
+	// "github.com/ddr4869/msazoom/config"
+	// jwt_lib "github.com/dgrijalva/jwt-go"
+
+	"log"
 	"net/http"
-	"os"
-	"strings"
-	"time"
 
+	"github.com/ddr4869/go_template/config"
+	"github.com/ddr4869/go_template/internal/dto"
 	"github.com/gin-gonic/gin"
-	"github.com/go-board/configs"
-	"github.com/go-board/internal/dto"
-	"github.com/golang-jwt/jwt"
-	"github.com/labstack/gommon/log"
-
-	"github.com/google/uuid"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-type Token struct {
-	AccessToken  string
-	RefreshToken string
-	AccessUuid   string
-	RefreshUuid  string
-	AtExpires    int64
-	RtExpires    int64
+type UserClaims struct {
+	Name string `json:"name"`
+	Role string `json:"role"`
+	jwt.RegisteredClaims
 }
 
-func UserTokenExtract(c *gin.Context) {
-	accessMetaData, err := ExtractTokenMetadata(c.Request)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		c.Abort()
-		return
-	}
-	c.Set("token", accessMetaData)
-}
-
-func CreateJwtToken(name, grade string) (string, string, error) {
-	userUuid := uuid.New().String()
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"uuid":      userUuid,
-		"userName":  name,
-		"userGrade": grade,
-		"exp":       time.Now().Add(time.Minute * 15).Unix(),
+func GenerateJWT(name, role string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"name": name,
+		"role": role,
 	})
-	accessSecretKey := os.Getenv("ACCESS_SECRET_KEY")
-	accessTokenString, err := accessToken.SignedString([]byte(accessSecretKey))
-	if err != nil {
-		log.Error(err)
-		return "", "", err
-	}
 
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"uuid":      userUuid,
-		"userName":  name,
-		"userGrade": grade,
-		"exp":       time.Now().Add(time.Hour * 24).Unix(),
-	})
-	refreshSecretKey := os.Getenv("REFRESH_SECRET_KEY")
-	refresgTokenString, err := refreshToken.SignedString([]byte(refreshSecretKey))
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(config.JwtSecretPassword))
 	if err != nil {
-		log.Error(err)
-		return "", "", err
+		log.Fatal(err)
+		return "", err
 	}
-
-	redis := configs.ServerConfig.GetRedisClient()
-	ctx := context.Background()
-
-	hsetValue := make([]string, 0)
-	hsetValue = append(hsetValue, "accessMetaData", accessTokenString, "refreshMetaData", refresgTokenString)
-	err = redis.HSet(ctx, name+"_jwtToken", hsetValue).Err()
-	if err != nil {
-		log.Error(err)
-		return "", "", err
-	}
-	return accessTokenString, refresgTokenString, nil
+	return tokenString, nil
 }
 
-func JwtTokenValid(r *http.Request) error {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return err
-	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
-		return err
-	}
-	return nil
-}
-
-func VerifyToken(r *http.Request) (*jwt.Token, error) {
-	tokenString, err := ExtractToken(r)
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		//Make sure that the token method conform to "SigningMethodHMAC"
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			log.Error(fmt.Errorf("unexpected signing method: %v", token.Header["alg"]))
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+func ParseJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bearToken := c.Request.Header.Get("Authorization")
+		if len(bearToken) < 7 || bearToken[:7] != "Bearer " {
+			dto.NewErrorResponse(c, http.StatusBadRequest, nil, "invalid token")
+			return
 		}
-		return []byte(os.Getenv("ACCESS_SECRET_KEY")), nil
-	})
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	return token, nil
-}
-
-func ExtractToken(r *http.Request) (string, error) {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		// if strArr[1] == "null" {
-		// 	return "", errors.New("Token format is invalid")
-		// }
-		return strArr[1], nil
-	}
-	return "", errors.New("Token format is invalid")
-}
-
-func ExtractTokenMetadata(r *http.Request) (*dto.AccessClaims, error) {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return nil, err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if ok && token.Valid {
-		userUuid, ok := claims["uuid"]
-		if !ok {
-			return nil, err
-		}
-		userName, ok := claims["userName"]
-		if !ok {
-			return nil, err
-		}
-		userGrade, ok := claims["userGrade"]
-		if !ok {
-			return nil, err
-		}
-		expireTime, ok := claims["exp"]
-		if !ok {
-			return nil, err
-		}
-
-		uuidStr := userUuid.(string)
-		uuidParsed, err := uuid.Parse(uuidStr)
+		bearToken = bearToken[7:]
+		token, err := jwt.ParseWithClaims(bearToken, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
+			// since we only use the one private key to sign the tokens,
+			// we also only use its public counter part to verify
+			return []byte(config.JwtSecretPassword), nil
+		})
 		if err != nil {
-			log.Infof("uuid.Parse uuid.Parse uuid.Parse: %+v", userUuid)
-			return nil, err
+			dto.NewErrorResponse(c, http.StatusInternalServerError, err, "failed to parse token")
+		} else if claims, ok := token.Claims.(*UserClaims); ok {
+			c.Set("claims", claims)
+		} else {
+			dto.NewErrorResponse(c, http.StatusInternalServerError, err, "unknown claims type, cannot proceed")
 		}
-		accessData := dto.AccessClaims{
-			UuID:       uuidParsed,
-			Username:   userName.(string),
-			UserGrade:  userGrade.(string),
-			ExpireTime: expireTime.(float64),
-		}
-		return &accessData, nil
+		c.Next()
 	}
-	return nil, err
 }

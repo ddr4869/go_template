@@ -6,20 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Admin is the predicate function for admin builders.
-type Admin func(*sql.Selector)
-
-// Board is the predicate function for board builders.
-type Board func(*sql.Selector)
-
-// CaServer is the predicate function for caserver builders.
-type CaServer func(*sql.Selector)
-
-// NonUser is the predicate function for nonuser builders.
-type NonUser func(*sql.Selector)
-
-// Payment is the predicate function for payment builders.
-type Payment func(*sql.Selector)
-
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

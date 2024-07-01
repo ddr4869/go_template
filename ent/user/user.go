@@ -3,69 +3,27 @@
 package user
 
 import (
-	"time"
-
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "name"
-	// FieldPassword holds the string denoting the password field in the database.
-	FieldPassword = "password"
-	// FieldGrade holds the string denoting the grade field in the database.
-	FieldGrade = "grade"
-	// FieldDescription holds the string denoting the description field in the database.
-	FieldDescription = "description"
-	// FieldCreatedDate holds the string denoting the created_date field in the database.
-	FieldCreatedDate = "created_date"
-	// EdgeCaserver holds the string denoting the caserver edge name in mutations.
-	EdgeCaserver = "caserver"
-	// EdgeBoards holds the string denoting the boards edge name in mutations.
-	EdgeBoards = "boards"
-	// EdgePayment holds the string denoting the payment edge name in mutations.
-	EdgePayment = "payment"
-	// CaServerFieldID holds the string denoting the ID field of the CaServer.
-	CaServerFieldID = "id"
-	// BoardFieldID holds the string denoting the ID field of the Board.
-	BoardFieldID = "id"
-	// PaymentFieldID holds the string denoting the ID field of the Payment.
-	PaymentFieldID = "id"
+	FieldID = "id"
+	// FieldAge holds the string denoting the age field in the database.
+	FieldAge = "age"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// CaserverTable is the table that holds the caserver relation/edge.
-	CaserverTable = "ca_servers"
-	// CaserverInverseTable is the table name for the CaServer entity.
-	// It exists in this package in order to avoid circular dependency with the "caserver" package.
-	CaserverInverseTable = "ca_servers"
-	// CaserverColumn is the table column denoting the caserver relation/edge.
-	CaserverColumn = "user_caserver"
-	// BoardsTable is the table that holds the boards relation/edge.
-	BoardsTable = "boards"
-	// BoardsInverseTable is the table name for the Board entity.
-	// It exists in this package in order to avoid circular dependency with the "board" package.
-	BoardsInverseTable = "boards"
-	// BoardsColumn is the table column denoting the boards relation/edge.
-	BoardsColumn = "user_boards"
-	// PaymentTable is the table that holds the payment relation/edge.
-	PaymentTable = "payments"
-	// PaymentInverseTable is the table name for the Payment entity.
-	// It exists in this package in order to avoid circular dependency with the "payment" package.
-	PaymentInverseTable = "payments"
-	// PaymentColumn is the table column denoting the payment relation/edge.
-	PaymentColumn = "user_payment"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldPassword,
-	FieldGrade,
-	FieldDescription,
-	FieldCreatedDate,
+	FieldAge,
+	FieldName,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -79,18 +37,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	PasswordValidator func([]byte) error
-	// DefaultGrade holds the default value on creation for the "grade" field.
-	DefaultGrade string
-	// GradeValidator is a validator for the "grade" field. It is called by the builders before save.
-	GradeValidator func(string) error
-	// DefaultDescription holds the default value on creation for the "description" field.
-	DefaultDescription string
-	// DefaultCreatedDate holds the default value on creation for the "created_date" field.
-	DefaultCreatedDate time.Time
-	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(string) error
+	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	AgeValidator func(int) error
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName string
 )
 
 // OrderOption defines the ordering options for the User queries.
@@ -101,80 +51,12 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByGrade orders the results by the grade field.
-func ByGrade(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldGrade, opts...).ToFunc()
+// ByAge orders the results by the age field.
+func ByAge(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAge, opts...).ToFunc()
 }
 
-// ByDescription orders the results by the description field.
-func ByDescription(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDescription, opts...).ToFunc()
-}
-
-// ByCreatedDate orders the results by the created_date field.
-func ByCreatedDate(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedDate, opts...).ToFunc()
-}
-
-// ByCaserverCount orders the results by caserver count.
-func ByCaserverCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newCaserverStep(), opts...)
-	}
-}
-
-// ByCaserver orders the results by caserver terms.
-func ByCaserver(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCaserverStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByBoardsCount orders the results by boards count.
-func ByBoardsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBoardsStep(), opts...)
-	}
-}
-
-// ByBoards orders the results by boards terms.
-func ByBoards(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBoardsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByPaymentCount orders the results by payment count.
-func ByPaymentCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPaymentStep(), opts...)
-	}
-}
-
-// ByPayment orders the results by payment terms.
-func ByPayment(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPaymentStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newCaserverStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CaserverInverseTable, CaServerFieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, CaserverTable, CaserverColumn),
-	)
-}
-func newBoardsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(BoardsInverseTable, BoardFieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, BoardsTable, BoardsColumn),
-	)
-}
-func newPaymentStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PaymentInverseTable, PaymentFieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, PaymentTable, PaymentColumn),
-	)
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
